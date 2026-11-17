@@ -11,8 +11,8 @@
 
 ## 参考資料(読むだけ。編集しない)
 - `docs/spec.md` … 仕様書。機能・画面・API・DB・ルールの正解はここ。
-- `reference/design/html/` … デザインのお手本(静的HTML)。見た目はこれに合わせる。
-- `reference/design/html/theme/tokens.css` … 色・フォント・角丸などのトークン。本番でもCSS変数としてそのまま使う。標準テーマは blue。
+- `references/design/html/` … デザインのお手本(静的HTML)。見た目はこれに合わせる。
+- `references/design/html/theme/tokens.css` … 色・フォント・角丸などのトークン。本番でもCSS変数としてそのまま使う。標準テーマは blue。
 
 ## 開発の進め方
 仕様書 第9章の順に、1ステップずつ進める。各ステップの終わりに必ず止まって報告し、私の確認を待つ。
