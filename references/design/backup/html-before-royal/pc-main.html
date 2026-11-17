@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="ja" data-theme="blue">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>タスク一覧と詳細パネル</title>
+<script>(function(){var t;try{t=new URLSearchParams(location.search).get('theme')||localStorage.getItem('todo-theme')}catch(e){}document.documentElement.setAttribute('data-theme',t==='pixel'?'pixel':'blue')})()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;family=DotGothic16&amp;family=Press+Start+2P&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="theme/tokens.css">
+<link rel="stylesheet" href="theme/icons.css">
+<link rel="stylesheet" href="theme/base.css">
+<link rel="stylesheet" href="theme/app.css">
+<script src="theme/theme.js" defer></script>
+<style>
+.app{min-height:calc(100vh - 48px);display:flex;flex-wrap:wrap;gap:var(--app-gap);padding:var(--app-pad)}
+
+/* サイドバー */
+.sidebar{flex:1 1 248px;max-width:280px;min-width:220px;background:var(--sidebar-bg);border:var(--pane-border);border-right:var(--pane-divider);box-shadow:var(--pane-shadow);padding:20px 12px 16px;display:flex;flex-direction:column;gap:2px}
+.sidebar .brand-row{display:flex;align-items:center;gap:10px;padding:0 10px 20px}
+.account{margin-top:auto;display:flex;align-items:center;gap:10px;padding:12px 2px 0 10px;border-top:var(--bw) solid var(--line)}
+.account .avatar{width:32px;height:32px}
+.account .who{flex:1;min-width:0}
+.account .name{font-family:var(--font-num);font-weight:var(--fw-ui-strong);font-size:var(--fs-name);-webkit-font-smoothing:var(--smoothing-num)}
+.account .mail{font-size:12px;color:var(--text-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.account .icon-btn{width:32px;height:32px}
+
+/* メイン */
+.main{flex:999 1 480px;min-width:0;background:var(--surface);border:var(--pane-border);box-shadow:var(--pane-shadow);padding:var(--main-pad)}
+.main-inner{max-width:720px;margin:0 auto}
+.page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px 24px;flex-wrap:wrap}
+.title-row{display:flex;align-items:baseline;gap:12px}
+.page-head h1{font-size:var(--fs-h1);line-height:var(--lh-heading)}
+.date{font-family:var(--font-ui);font-size:var(--fs-ui-m);color:var(--text-3);font-weight:var(--fw-ui-medium)}
+.progress{display:flex;align-items:center;gap:10px;min-width:220px;padding-bottom:5px}
+.progress .label{font-family:var(--font-ui);font-size:var(--fs-ui-m);color:var(--text-3);white-space:nowrap}
+
+.quick{margin-top:24px;border:var(--bw) solid var(--line-strong);border-radius:var(--r-xl);padding:6px 6px 6px 14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--input-bg);transition:border-color var(--t-color),box-shadow var(--t-color)}
+.quick:focus-within{border-color:var(--accent);box-shadow:var(--ring)}
+.quick>.ico{color:var(--accent)}
+.quick input{flex:1 1 200px;border:0;outline:none;padding:9px 0;font-size:15px;background:transparent}
+.chip{height:34px;padding:0 10px;border-radius:var(--r-md);font-size:var(--fs-ui-m)}
+.chip .ico{--s:14px}
+.btn-add{height:34px;padding:0 16px;border-radius:var(--r-md);font-size:var(--fs-ui-m)}
+
+.tabs{display:inline-flex;margin-top:20px}
+.tabs>button{height:32px;padding:0 14px}
+
+.section{margin-top:28px}
+.toggle{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 8px;margin:0 0 4px -8px;border-radius:var(--r-sm);font-family:var(--font-ui);font-size:var(--fs-ui-m);font-weight:var(--fw-ui-strong);color:var(--text-3)}
+.toggle .ico{--s:14px}
+.toggle:active{background:var(--press)}
+.meta .ico{--s:14px}
+
+/* 詳細パネル */
+.panel{flex:1 1 360px;max-width:380px;background:var(--surface);border:var(--pane-border);border-left:var(--pane-divider);box-shadow:var(--pane-shadow);display:flex;flex-direction:column}
+.panel-head{display:flex;align-items:center;justify-content:space-between;padding:14px 14px 6px 24px}
+.crumb{font-family:var(--font-ui);font-size:var(--fs-ui-s);color:var(--text-3);display:flex;align-items:center;gap:6px}
+.panel-head .icon-btn{width:36px;height:36px}
+.panel-body{padding:4px 24px 24px;flex:1}
+.title-wrap{display:flex;gap:12px;align-items:flex-start}
+.title-wrap .check{width:24px;height:24px;margin-top:3px}
+.panel h2{font-size:var(--fs-h2-panel);line-height:1.45}
+.props{margin:24px 0 0;display:grid;grid-template-columns:76px minmax(0,1fr);row-gap:12px;align-items:center;font-size:13px}
+.props dt{font-family:var(--font-ui);font-size:var(--fs-ui-m);color:var(--text-3)}
+.props dd{margin:0}
+.due{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 10px;border-radius:var(--r-md);background:var(--due-bg);border:var(--due-border);color:var(--danger);font-family:var(--font-ui);font-size:var(--fs-ui-m);font-weight:var(--fw-ui-strong)}
+.due .ico{--s:14px}
+.prio{width:fit-content}
+.prio>button{height:30px;min-width:44px;padding:0 12px}
+.select-btn{height:32px;padding:0 8px 0 10px;border-radius:var(--r-md);font-size:var(--fs-ui-m);background:var(--surface)}
+.select-btn .ico{--s:14px}
+.memo-label{display:block;margin-top:24px;font-family:var(--font-ui);font-size:var(--fs-ui-m);color:var(--text-3)}
+.memo{display:block;margin-top:8px;width:100%;border:var(--bw) solid var(--field-border);border-radius:var(--r-lg);padding:12px;resize:vertical;font-size:14px;line-height:1.7;background:var(--field);outline:none;transition:border-color var(--t-color),box-shadow var(--t-color),background-color var(--t-color)}
+.memo:focus{border-color:var(--accent);box-shadow:var(--ring);background:var(--field-focus)}
+.counter{text-align:right;font-size:12px;color:var(--text-3);margin-top:6px}
+.panel-foot{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 10px 24px;border-top:var(--bw) solid var(--line);font-size:12px;color:var(--text-3)}
+.saved{display:flex;align-items:center;gap:6px}
+.saved .ico{--s:14px;color:var(--success)}
+.panel-foot .btn-danger{height:34px;padding:0 10px;border-radius:var(--r-md);font-size:var(--fs-ui-m)}
+.panel-foot .btn-danger .ico{--s:16px}
+
+@media (hover:hover) and (pointer:fine){
+  .toggle:hover{background:var(--hover);color:var(--text-2)}
+  .quick:hover:not(:focus-within){border-color:var(--line-hover)}
+  .memo:hover:not(:focus){border-color:var(--line-hover)}
+}
+</style>
+</head>
+<body>
+<div class="theme-bar">
+  <span class="ui-label" id="theme-label">テーマ</span>
+  <div class="seg theme-switch" role="group" aria-labelledby="theme-label">
+    <button type="button" data-theme-set="blue" aria-pressed="true">ブルー</button>
+    <button type="button" data-theme-set="pixel" aria-pressed="false">ピクセル</button>
+  </div>
+</div>
+<div class="app">
+
+  <!-- サイドバー -->
+  <nav class="sidebar" aria-label="メインメニュー">
+    <div class="brand-row">
+      <div class="logo-sm"><i class="ico i-logo" style="--s:16px" aria-hidden="true"></i></div>
+      <span class="brand-name">シンプルTodo</span>
+    </div>
+    <a class="nav-item cursor" href="#" aria-current="page">
+      <i class="ico i-sun" aria-hidden="true"></i>
+      <span>今日</span><span class="count">4</span>
+    </a>
+    <a class="nav-item" href="#">
+      <i class="ico i-inbox" aria-hidden="true"></i>
+      <span>インボックス</span><span class="count">1</span>
+    </a>
+    <div class="group-label">リスト</div>
+    <a class="nav-item" href="#">
+      <span class="list-dot c-work" aria-hidden="true"></span>
+      <span>仕事</span><span class="count">3</span>
+    </a>
+    <a class="nav-item" href="#">
+      <span class="list-dot c-shop" aria-hidden="true"></span>
+      <span>買い物</span><span class="count">1</span>
+    </a>
+    <button class="nav-item is-muted" type="button">
+      <i class="ico i-plus" aria-hidden="true"></i>
+      リストを追加
+    </button>
+    <div class="account">
+      <div class="avatar" aria-hidden="true">E</div>
+      <div class="who">
+        <div class="name">Erika</div>
+        <div class="mail">erika@example.com</div>
+      </div>
+      <button class="icon-btn tap" type="button" aria-label="アカウントメニュー"><i class="ico i-dots" aria-hidden="true"></i></button>
+    </div>
+  </nav>
+
+  <!-- メイン -->
+  <main class="main">
+    <div class="main-inner">
+      <header class="page-head">
+        <div class="title-row">
+          <h1>今日</h1>
+          <span class="date"><span class="n">11</span>月<span class="n">17</span>日(火)</span>
+        </div>
+        <div class="progress">
+          <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="5" aria-valuenow="1" aria-label="今日の進み具合"><i style="width:20%"></i></div>
+          <span class="label"><span class="n">5</span>件中 <span class="n">1</span>件完了</span>
+        </div>
+      </header>
+
+      <!-- クイック追加 -->
+      <form class="quick">
+        <i class="ico i-plus" aria-hidden="true"></i>
+        <label class="sr-only" for="quick-add">新しいタスク</label>
+        <input id="quick-add" placeholder="今日やることを追加" autocomplete="off">
+        <button class="btn btn-secondary chip tap" type="button"><i class="ico i-cals" aria-hidden="true"></i>今日</button>
+        <button class="btn btn-secondary chip tap" type="button"><i class="ico i-flag" aria-hidden="true"></i>優先度</button>
+        <button class="btn btn-primary btn-add tap" type="submit">追加</button>
+      </form>
+
+      <!-- 絞り込み -->
+      <div class="seg tabs" role="tablist" aria-label="絞り込み">
+        <button type="button" role="tab" aria-selected="false">すべて <span class="n">5</span></button>
+        <button type="button" role="tab" aria-selected="true">未完了 <span class="n">4</span></button>
+        <button type="button" role="tab" aria-selected="false">完了 <span class="n">1</span></button>
+      </div>
+
+      <!-- 期限切れ -->
+      <section class="section">
+        <h2 class="sec-h is-danger">期限切れ<span class="n">1</span></h2>
+        <div class="rows">
+          <div class="task is-selected cursor">
+            <button class="check is-high" type="button" aria-label="完了にする"></button>
+            <div class="task-body">
+              <div class="task-title is-strong">請求書を送る</div>
+              <div class="meta">
+                <span class="is-overdue"><i class="ico i-cals" aria-hidden="true"></i>昨日</span>
+                <span><i class="swatch c-work"></i>仕事</span>
+                <span><i class="ico i-memo" aria-hidden="true"></i>メモあり</span>
+              </div>
+            </div>
+            <i class="ico i-flagfill flag" style="--s:16px" role="img" aria-label="優先度 高"></i>
+          </div>
+        </div>
+      </section>
+
+      <!-- 今日 -->
+      <section class="section">
+        <h2 class="sec-h">今日<span class="n">3</span></h2>
+        <div class="rows">
+          <div class="task">
+            <button class="check" type="button" aria-label="完了にする"></button>
+            <div class="task-body">
+              <div class="task-title">定例ミーティングの議事録をまとめる</div>
+              <div class="meta"><span><i class="swatch c-work"></i>仕事</span></div>
+            </div>
+          </div>
+          <div class="task">
+            <button class="check" type="button" aria-label="完了にする"></button>
+            <div class="task-body">
+              <div class="task-title">牛乳と卵を買う</div>
+              <div class="meta"><span><i class="swatch c-shop"></i>買い物</span></div>
+            </div>
+          </div>
+          <div class="task">
+            <button class="check" type="button" aria-label="完了にする"></button>
+            <div class="task-body">
+              <div class="task-title">読みたい本をメモする</div>
+              <div class="meta"><span>インボックス</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 完了(畳める) -->
+      <section class="section">
+        <button class="toggle" type="button" aria-expanded="true"><i class="ico i-down" aria-hidden="true"></i>完了 <span class="n">1</span></button>
+        <div class="rows">
+          <div class="task is-done">
+            <button class="check is-done" type="button" aria-label="未完了に戻す"></button>
+            <div class="task-body">
+              <div class="task-title">会議室を予約する</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- 詳細パネル -->
+  <aside class="panel" aria-label="タスク詳細">
+    <div class="panel-head">
+      <span class="crumb"><i class="swatch c-work"></i>仕事</span>
+      <button class="icon-btn tap" type="button" aria-label="閉じる"><i class="ico i-close" aria-hidden="true"></i></button>
+    </div>
+    <div class="panel-body">
+      <div class="title-wrap">
+        <button class="check is-high" type="button" aria-label="完了にする"></button>
+        <h2>請求書を送る</h2>
+      </div>
+
+      <dl class="props">
+        <dt>期限</dt>
+        <dd><span class="due"><i class="ico i-cals" aria-hidden="true"></i><span class="n">11/16</span>(月)・期限切れ</span></dd>
+        <dt>優先度</dt>
+        <dd class="seg prio">
+          <button type="button" aria-pressed="true" class="is-high">高</button>
+          <button type="button" aria-pressed="false">中</button>
+          <button type="button" aria-pressed="false">低</button>
+        </dd>
+        <dt>リスト</dt>
+        <dd>
+          <button class="btn btn-secondary select-btn tap" type="button"><i class="swatch c-work"></i>仕事<i class="ico i-down" aria-hidden="true"></i></button>
+        </dd>
+      </dl>
+
+      <label class="memo-label" for="memo">メモ</label>
+      <textarea class="memo" id="memo" rows="5" maxlength="1000">先月分。PDFにして経理へ</textarea>
+      <div class="counter"><span class="n">13 / 1000</span></div>
+    </div>
+    <div class="panel-foot">
+      <span class="saved"><i class="ico i-check" aria-hidden="true"></i>保存しました・<span class="n">11/15</span> 作成</span>
+      <button class="btn btn-danger tap" type="button"><i class="ico i-trash" aria-hidden="true"></i>削除</button>
+    </div>
+  </aside>
+</div>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ja" data-theme="blue">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>タスク詳細(スマホ)</title>
+<script>(function(){var t;try{t=new URLSearchParams(location.search).get('theme')||localStorage.getItem('todo-theme')}catch(e){}document.documentElement.setAttribute('data-theme',t==='pixel'?'pixel':'blue')})()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;family=DotGothic16&amp;family=Press+Start+2P&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="theme/tokens.css">
+<link rel="stylesheet" href="theme/icons.css">
+<link rel="stylesheet" href="theme/base.css">
+<link rel="stylesheet" href="theme/app.css">
+<script src="theme/theme.js" defer></script>
+<style>
+.theme-bar{width:390px}
+.phone{width:390px;height:844px;position:relative;overflow:hidden;background:var(--page);display:flex;flex-direction:column}
+.top{display:flex;align-items:center;justify-content:space-between;padding:12px 12px 4px}
+.back{height:44px;padding:0 10px 0 4px;border-radius:var(--r-lg);display:flex;align-items:center;gap:4px;color:var(--link);font-family:var(--font-ui);font-size:var(--fs-ui-l);font-weight:var(--fw-ui-medium)}
+.back .ico{--s:22px}
+.back:active{background:var(--accent-soft)}
+.saved{font-family:var(--font-ui);font-size:var(--fs-ui-s);color:var(--success);display:flex;align-items:center;gap:4px;padding-right:8px}
+.saved .ico{--s:14px}
+.body{padding:8px 20px 24px;flex:1}
+.title-wrap{display:flex;gap:12px;align-items:flex-start}
+.title-wrap .check{width:26px;height:26px;margin-top:3px}
+.body h1{font-size:var(--fs-h1-detail);line-height:1.45}
+.group{margin-top:24px;background:var(--group-bg);border:var(--group-border);border-radius:var(--r-2xl);box-shadow:var(--shadow-float);overflow:hidden}
+.row{position:relative;width:100%;display:flex;align-items:center;gap:12px;padding:0 16px;min-height:52px;text-align:left;transition:background-color var(--t-color)}
+.row+.row::before{content:"";position:absolute;left:0;right:0;top:0;height:var(--divider-h);background:var(--divider)}
+.row.is-tall{min-height:56px}
+.row>.ico:first-child{color:var(--text-3)}
+.row .k{flex:1;font-family:var(--font-ui);font-size:var(--fs-ui-l);color:var(--text-3)}
+.row .v{display:flex;align-items:center;gap:6px;font-family:var(--font-ui);font-size:var(--fs-ui-l)}
+.row .v.is-danger{color:var(--danger);font-weight:var(--fw-ui-strong)}
+.row .chev{--s:16px;color:var(--check-border)}
+button.row:active{background:var(--row-press)}
+.prio>button{height:34px;min-width:44px;padding:0 10px}
+.memo-label{display:block;margin-top:24px;font-family:var(--font-ui);font-size:var(--fs-ui-m);color:var(--text-3)}
+.memo{display:block;margin-top:8px;width:100%;border:var(--bw) solid var(--field-border);border-radius:var(--r-2xl);padding:14px;resize:none;font-size:16px;line-height:1.7;background:var(--field);box-shadow:var(--shadow-float);outline:none;transition:border-color var(--t-color),box-shadow var(--t-color),background-color var(--t-color)}
+.memo:focus{border-color:var(--accent);box-shadow:var(--ring);background:var(--field-focus)}
+.foot{position:relative;padding:12px 20px 28px;display:flex;align-items:center;justify-content:space-between}
+.foot::before{content:"";position:absolute;left:0;right:0;top:0;height:var(--divider-h);background:var(--divider-page)}
+.foot .created{font-family:var(--font-ui);font-size:var(--fs-ui-s);color:var(--text-3)}
+.foot .btn-danger{height:44px;padding:0 16px;border-radius:var(--r-lg);background:var(--btn-danger-filled);font-size:var(--fs-ui-l);box-shadow:var(--shadow-float)}
+.foot .btn-danger .ico{--s:16px}
+.foot .btn-danger:active{background:var(--danger-press)}
+@media (hover:hover) and (pointer:fine){button.row:hover{background:var(--row-hover)}}
+</style>
+</head>
+<body>
+<div class="theme-bar">
+  <span class="ui-label" id="theme-label">テーマ</span>
+  <div class="seg theme-switch" role="group" aria-labelledby="theme-label">
+    <button type="button" data-theme-set="blue" aria-pressed="true">ブルー</button>
+    <button type="button" data-theme-set="pixel" aria-pressed="false">ピクセル</button>
+  </div>
+</div>
+<div class="phone">
+  <header class="top">
+    <a class="back tap" href="sp-list.html"><i class="ico i-left" aria-hidden="true"></i>今日</a>
+    <span class="saved" role="status"><i class="ico i-check" aria-hidden="true"></i>保存済み</span>
+  </header>
+
+  <div class="body">
+    <div class="title-wrap">
+      <button class="check is-high" type="button" aria-label="完了にする"></button>
+      <h1>請求書を送る</h1>
+    </div>
+
+    <div class="group">
+      <button class="row" type="button">
+        <i class="ico i-cal" aria-hidden="true"></i>
+        <span class="k">期限</span>
+        <span class="v is-danger"><span class="n">11/16</span>(月)・期限切れ</span>
+      </button>
+      <div class="row is-tall">
+        <i class="ico i-flag" aria-hidden="true"></i>
+        <span class="k">優先度</span>
+        <div class="seg prio" role="group" aria-label="優先度">
+          <button type="button" aria-pressed="true" class="is-high">高</button>
+          <button type="button" aria-pressed="false">中</button>
+          <button type="button" aria-pressed="false">低</button>
+        </div>
+      </div>
+      <button class="row" type="button">
+        <i class="ico i-folder" aria-hidden="true"></i>
+        <span class="k">リスト</span>
+        <span class="v"><i class="swatch c-work"></i>仕事</span>
+        <i class="ico i-right chev" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <label class="memo-label" for="m-memo">メモ</label>
+    <textarea class="memo" id="m-memo" rows="6" maxlength="1000">先月分。PDFにして経理へ</textarea>
+  </div>
+
+  <div class="foot">
+    <span class="created"><span class="n">11/15</span> 作成</span>
+    <button class="btn btn-danger tap" type="button"><i class="ico i-trash" aria-hidden="true"></i>削除</button>
+  </div>
+</div>
+</body>
+</html>

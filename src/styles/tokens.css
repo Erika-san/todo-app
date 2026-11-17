@@ -1,0 +1,220 @@
+/* references/design/html/theme/tokens.css の blue テーマ部分(1〜219行目)をそのまま写したもの。値はお手本側に合わせて更新する */
+/* =========================================================
+   テーマトークン
+   - 画面側のCSSはこのファイルの変数だけを参照する(生の色・px値の見た目指定を持たない)
+   - テーマを足すときは [data-theme="名前"] のブロックを1つ追加し、同じ変数を全部埋める
+   ========================================================= */
+
+/* ---------- ブルー(標準) ---------- */
+:root,
+[data-theme="blue"]{
+  color-scheme:light;
+
+  /* 色: 面 */
+  --page:#FFFFFF;
+  --surface:#FFFFFF;
+  --surface-sunken:#F6F7F9;
+  --auth-bg:#F6F7F9;
+  --field:#FAFBFC;
+  --field-focus:#FFFFFF;
+  --input-bg:#FFFFFF;
+  --hover:rgba(23,24,28,.045);
+  --press:rgba(23,24,28,.075);
+  --row-hover:#F6F7F9;
+  --row-press:#F6F7F9;
+  /* 色: 線 */
+  --line:#E7E8EC;
+  --line-soft:#EDEEF1;
+  --line-strong:#D9DBE1;
+  --line-hover:#C3C6CE;
+  /* 色: 文字 */
+  --text:#17181C;
+  --text-2:#4A4E57;
+  --text-3:#6B6F7A;
+  --placeholder:#6E727D;
+  /* 色: アクセント */
+  --accent:#3B5BDB;
+  --accent-hover:#3451C7;
+  --accent-press:#2F4AC0;
+  --accent-soft:#EEF2FF;
+  --on-accent:#FFFFFF;
+  --link:#3B5BDB;
+  --link-hover:#2F4AC0;
+  --focus:#3B5BDB;
+  --selection-bg:#DBE4FF;
+  --selection-fg:#17181C;
+  /* 色: 意味 */
+  --danger:#C92A2A;
+  --danger-soft:#FFF5F5;
+  --danger-press:#FFE9E9;
+  --danger-hover-fg:#C92A2A;
+  --high:#C9420E;
+  --high-soft:rgba(201,66,14,.06);
+  --high-soft-hover:rgba(201,66,14,.1);
+  --success:#278138;
+  --meter-on:#F08C00;
+  --list-work:#3B5BDB;
+  --list-shop:#2B8A3E;
+  --progress-num:currentColor;
+  --r-bar:3px;
+  --field-border:#E7E8EC;
+  --fs-name:13px;
+  --task-pad-l-sp:8px;
+  --fs-count-lg:13px;
+  --icon-btn-hover-border:transparent;
+  --fs-avatar:12px;
+
+  /* フォント */
+  --font-body:Inter,"Noto Sans JP",system-ui,sans-serif;
+  --font-ui:Inter,"Noto Sans JP",system-ui,sans-serif;
+  --font-heading:Inter,"Noto Sans JP",system-ui,sans-serif;
+  --font-num:Inter,"Noto Sans JP",system-ui,sans-serif;
+  --smoothing:antialiased;
+  --smoothing-num:antialiased;
+  --fs-num:1em;
+  --fs-count:12px;
+  --fs-ui-s:12px;
+  --fs-ui-m:13px;
+  --fs-ui-l:14px;
+  --fs-brand:16px;
+  --fs-h1:28px;
+  --fs-h1-auth:24px;
+  --fs-h1-detail:22px;
+  --fs-h2-panel:20px;
+  --fs-btn-lg:15px;
+  --ls-btn-lg:0;
+  --ls-heading:-.015em;
+  --fw-heading:700;
+  --fw-ui-strong:600;
+  --fw-ui-medium:500;
+  --lh-heading:1.25;
+  --heading-shadow:none;
+
+  /* 角丸 */
+  --r-xs:2px;
+  --r-sm:4px;
+  --r-md:8px;
+  --r-lg:10px;
+  --r-xl:12px;
+  --r-2xl:14px;
+  --r-3xl:16px;
+  --r-full:50%;
+
+  /* 枠線 */
+  --bw:1px;
+  --bw-check:2px;
+  --divider-h:1px;
+  --divider:#EDEEF1;
+  --divider-page:#EDEEF1;
+  --pane-border:0 solid transparent;
+  --pane-divider:1px solid #E7E8EC;
+  --card-border:0 solid transparent;
+  --group-border:1px solid #E7E8EC;
+  --input-border:#D9DBE1;
+  --btn-primary-border:0 solid transparent;
+  --btn2-border:1px solid #E7E8EC;
+  --btn2-border-hover:#D9DBE1;
+  --btn-danger-border:0 solid transparent;
+  --seg-border:0 solid transparent;
+  --seg-divider:0 solid transparent;
+  --bar-border:0 solid transparent;
+  --logo-border:0 solid transparent;
+  --avatar-border:0 solid transparent;
+  --drawer-border:0 solid transparent;
+  --dock-border:1px solid #D9DBE1;
+  --meter-border:0 solid transparent;
+
+  /* 影 */
+  --ring:0 0 0 3px rgba(59,91,219,.2);
+  --ring-danger:0 0 0 3px rgba(201,42,42,.16);
+  --invalid-inset:inset 0 0 0 .5px #C92A2A;
+  --card-shadow:0 0 0 1px rgba(23,24,28,.055),0 1px 2px rgba(23,24,28,.04),0 12px 32px -16px rgba(23,24,28,.14);
+  --pane-shadow:none;
+  --dock-shadow:0 1px 2px rgba(23,24,28,.06),0 10px 28px -8px rgba(23,24,28,.18);
+  --drawer-shadow:8px 0 32px rgba(23,24,28,.16);
+  --shadow-primary:inset 0 1px 0 rgba(255,255,255,.14),0 1px 2px rgba(23,24,28,.14);
+  --shadow-primary-active:inset 0 1px 0 rgba(255,255,255,.14),0 1px 2px rgba(23,24,28,.14);
+  --shadow-btn2:none;
+  --shadow-logout:0 1px 2px rgba(23,24,28,.04);
+  --shadow-logo:inset 0 1px 0 rgba(255,255,255,.18),0 1px 2px rgba(23,24,28,.12);
+  --shadow-logo-lg:inset 0 1px 0 rgba(255,255,255,.18),0 1px 2px rgba(23,24,28,.12),0 6px 14px -6px rgba(59,91,219,.55);
+  --shadow-float:none;
+
+  /* 部品ごとの値 */
+  --app-gap:0px;
+  --app-pad:0px;
+  --main-pad:36px 40px 48px;
+  --sidebar-bg:#F6F7F9;
+  --nav-pad-l:10px;
+  --nav-active-bg:#FFFFFF;
+  --nav-active-shadow:0 0 0 1px #E7E8EC,0 1px 2px rgba(23,24,28,.05);
+  --nav-active-fg:#3B5BDB;
+  --selected-bg:#EEF2FF;
+  --selected-ring:inset 0 0 0 1px #D5DDFB;
+  --selected-meta:#666A75;
+  --task-pad-l:12px;
+  --task-inset:46px;
+  --check-r:50%;
+  --check-border:#ADB1BA;
+  --check-border-hover:#6B6F7A;
+  --check-bg:transparent;
+  --check-done-bg:#3B5BDB;
+  --check-done-hover:#3451C7;
+  --check-mark-w:60%;
+  --check-mark-h:60%;
+  --seg-bg:#F1F2F4;
+  --seg-pad:3px;
+  --seg-gap:2px;
+  --seg-fg:#4A4E57;
+  --seg-on-bg:#FFFFFF;
+  --seg-on-fg:#17181C;
+  --seg-on-shadow:0 1px 2px rgba(23,24,28,.08),0 0 0 .5px rgba(23,24,28,.05);
+  --seg-high-on-bg:#FFFFFF;
+  --seg-high-on-fg:#C9420E;
+  --seg-hover-bg:rgba(255,255,255,.55);
+  --bar-h:6px;
+  --bar-pad:0px;
+  --bar-bg:#EDEEF1;
+  --bar-fill:#3B5BDB;
+  --btn2-bg:transparent;
+  --btn2-fg:#4A4E57;
+  --btn2-hover-bg:#F6F7F9;
+  --btn-danger-bg:transparent;
+  --btn-danger-filled:#FFF5F5;
+  --logo-bg:#3B5BDB;
+  --logo-fg:#FFFFFF;
+  --avatar-bg:#DBE4FF;
+  --avatar-fg:#3451C7;
+  --avatar-font:Inter,"Noto Sans JP",system-ui,sans-serif;
+  --meter-h:4px;
+  --meter-off:#EDEEF1;
+  --due-bg:#FFF5F5;
+  --due-border:0 solid transparent;
+  --dock-bg:#FFFFFF;
+  --dock-fade:linear-gradient(to bottom,rgba(255,255,255,0),#FFFFFF 45%);
+  --scrim:rgba(23,24,28,.4);
+  --scrim-size:auto;
+  --group-bg:#FFFFFF;
+  --list-frame-bg:transparent;
+  --list-frame-border:0 solid transparent;
+  --list-frame-margin:0px;
+  --list-frame-pad:4px 12px 132px;
+  --chrome-bg:#FFFFFF;
+  --chrome-border:1px solid #E7E8EC;
+
+  /* 装飾(なし = none) */
+  --cursor-content:none;
+  --group-rule:none;
+  --icon-fit:contain;
+  --logo-lg-fit:contain;
+
+  /* アニメーション */
+  --t-color:150ms ease;
+  --t-press:160ms cubic-bezier(.23,1,.32,1);
+  --press-transform:scale(.97);
+  --press-check:scale(.9);
+  --anim-card:none;
+  --anim-drawer:drawer-in 450ms cubic-bezier(.32,.72,0,1) both;
+  --anim-scrim:scrim-in 300ms ease both;
+  --anim-cursor:none;
+}

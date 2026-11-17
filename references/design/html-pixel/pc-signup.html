@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>新規登録</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DotGothic16&amp;family=Press+Start+2P&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<style>
+/* パレットは8色のみ。濃淡や透明度での派生色も作らない */
+:root{
+  --ink:#0E1030;    /* ウィンドウ地・影 */
+  --win:#23307A;    /* 画面地・入力欄・選択行 */
+  --cream:#F4EFD8;  /* 本文・枠線 */
+  --dim:#A9B2E8;    /* 補足文字 */
+  --gold:#FFD447;   /* カーソル・主ボタン・選択 */
+  --red:#FF8A7A;    /* 期限切れ・削除・エラー */
+  --orange:#FFAE57; /* 優先度 高・ボタンの段差 */
+  --green:#7EE08F;  /* 完了・保存・HPバー */
+  --f-pixel:"DotGothic16","Noto Sans JP",sans-serif;
+  --f-num:"Press Start 2P","DotGothic16",monospace;
+  --f-body:"Noto Sans JP",system-ui,sans-serif;
+  --shadow:4px 4px 0 0 var(--ink);
+}
+*,*::before,*::after{box-sizing:border-box;border-radius:0}
+html{-webkit-text-size-adjust:100%;color:var(--cream);background:var(--win)}
+body{margin:0;background:var(--win);color:var(--cream);font-family:var(--f-body);font-size:14px;line-height:1.6;font-weight:400}
+::selection{background:var(--gold);color:var(--ink)}
+h1,h2{margin:0;font-family:var(--f-pixel);font-weight:400;letter-spacing:.02em}
+a{color:var(--gold);text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;margin:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+a{-webkit-tap-highlight-color:transparent}
+input,textarea{font:inherit;color:inherit;caret-color:var(--gold)}
+::placeholder{color:var(--dim);opacity:1}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.px{font-family:var(--f-pixel);font-weight:400;-webkit-font-smoothing:none}
+.n{font-family:var(--f-num);font-size:12px;line-height:1;-webkit-font-smoothing:none}
+.pxi{display:block;flex-shrink:0}
+.window{background:var(--ink);border:2px solid var(--cream);box-shadow:var(--shadow)}
+.swatch{display:inline-block;width:8px;height:8px;flex-shrink:0;background:var(--c)}
+
+/* ボタン: 押すと2pxずれて段差が反転する(カクッと2コマ) */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--f-pixel);font-size:16px;line-height:1;border:2px solid var(--cream);transition:transform 80ms steps(2)}
+.btn:active{transform:translate(2px,2px)}
+.btn-gold{background:var(--gold);color:var(--ink);box-shadow:inset -4px -4px 0 0 var(--orange)}
+.btn-gold:active{box-shadow:inset 4px 4px 0 0 var(--orange)}
+.btn-sub{background:var(--ink);color:var(--cream);border-color:var(--dim);box-shadow:inset -2px -2px 0 0 var(--win)}
+.btn-danger{background:var(--ink);color:var(--red);border-color:var(--red)}
+.icon-btn{display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--cream);border:2px solid transparent;transition:transform 80ms steps(2)}
+.icon-btn:active{transform:translate(2px,2px)}
+
+/* RPGのカーソル(▶)。1秒周期で2px揺れる */
+.cursor::before{content:"";position:absolute;left:6px;top:50%;width:8px;height:14px;margin-top:-7px;background:var(--gold);-webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%204%207'%20shape-rendering%3D'crispEdges'%3E%3Cpath%20d%3D'M0%200h1v1h-1zM0%201h2v1h-2zM0%202h3v1h-3zM0%203h4v1h-4zM0%204h3v1h-3zM0%205h2v1h-2zM0%206h1v1h-1z'%2F%3E%3C%2Fsvg%3E") center/8px 14px no-repeat;mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%204%207'%20shape-rendering%3D'crispEdges'%3E%3Cpath%20d%3D'M0%200h1v1h-1zM0%201h2v1h-2zM0%202h3v1h-3zM0%203h4v1h-4zM0%204h3v1h-3zM0%205h2v1h-2zM0%206h1v1h-1z'%2F%3E%3C%2Fsvg%3E") center/8px 14px no-repeat;animation:bob 1s steps(1) infinite}
+@keyframes bob{50%{transform:translateX(2px)}}
+
+@media (hover:hover) and (pointer:fine){
+  .btn-gold:hover{background:var(--cream)}
+  .btn-sub:hover{background:var(--win);border-color:var(--cream)}
+  .btn-danger:hover{background:var(--red);color:var(--ink)}
+  .icon-btn:hover{border-color:var(--cream);background:var(--win)}
+}
+@media (prefers-reduced-motion:reduce){
+  .btn:active,.icon-btn:active{transform:none}
+  .cursor::before{animation:none}
+}
+.auth{min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:40px 20px}
+.auth-inner{width:100%;max-width:400px}
+.brand{display:flex;flex-direction:column;align-items:center;text-align:center;margin-bottom:28px}
+.logo{width:48px;height:48px;background:var(--gold);color:var(--ink);border:2px solid var(--cream);box-shadow:inset -4px -4px 0 0 var(--orange),var(--shadow);display:flex;align-items:center;justify-content:center;margin-bottom:20px}
+.brand h1{font-size:32px;line-height:1.25;text-shadow:2px 2px 0 var(--ink)}
+.brand p{margin:8px 0 0;color:var(--cream)}
+/* ウィンドウが上下に開く(4コマ) */
+.card{padding:28px 28px 32px;display:flex;flex-direction:column;gap:22px;animation:win-open 240ms steps(4) both}
+@keyframes win-open{from{clip-path:inset(50% 0 50% 0)}to{clip-path:inset(0 -8px -8px 0)}}
+.field{display:flex;flex-direction:column;gap:8px}
+.field-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.label{font-family:var(--f-pixel);font-size:16px;line-height:1.2;color:var(--cream)}
+.link-sm{font-size:12px}
+.input{height:46px;width:100%;padding:0 14px;border:2px solid var(--dim);background:var(--win);font-size:15px;outline:none}
+.input:focus,.input.is-focus{border-color:var(--gold);outline:2px solid var(--gold);outline-offset:2px}
+.input[aria-invalid="true"]{border-color:var(--red)}
+.input[aria-invalid="true"]:focus{outline-color:var(--red)}
+.msg{margin:0;font-size:12px;line-height:1.5;display:flex;align-items:center;gap:8px;color:var(--dim)}
+.msg.is-error{color:var(--red)}
+.btn-primary{margin-top:6px;height:52px;width:100%;font-size:20px;letter-spacing:.1em}
+.switch{text-align:center;margin:24px 0 0;color:var(--cream);font-size:13px}
+.switch a{font-family:var(--f-pixel);font-size:16px;margin-left:4px}
+@media (hover:hover) and (pointer:fine){
+  .link-sm:hover,.switch a:hover{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:4px}
+  .input:hover:not(:focus):not(.is-focus):not([aria-invalid="true"]){border-color:var(--cream)}
+}
+@media (prefers-reduced-motion:reduce){.card{animation:none}}
+/* 強さメーター: 3マスのゲージ */
+.meter{display:flex;gap:4px;margin-top:2px}
+.meter span{flex:1;height:10px;border:2px solid var(--dim);background:var(--ink)}
+.meter span.on{background:var(--orange);border-color:var(--orange)}
+</style>
+</head>
+<body>
+<main class="auth">
+  <div class="auth-inner">
+    <div class="brand">
+      <div class="logo"><svg class="pxi" width="27" height="21" viewBox="0 0 9 7" fill="currentColor" shape-rendering="crispEdges" aria-hidden="true"><path d="M8 0h1v1h-1zM7 1h2v1h-2zM6 2h2v1h-2zM0 3h1v1h-1zM5 3h2v1h-2zM0 4h2v1h-2zM4 4h2v1h-2zM1 5h4v1h-4zM2 6h2v1h-2z"/></svg></div>
+      <h1>アカウントを作成</h1>
+      <p>メールアドレスだけで、すぐに始められます</p>
+    </div>
+    <form class="card window" novalidate>
+      <div class="field">
+        <label class="label" for="su-name">名前</label>
+        <input class="input" id="su-name" type="text" autocomplete="name" placeholder="例: Erika">
+      </div>
+      <div class="field">
+        <label class="label" for="su-email">メールアドレス</label>
+        <input class="input" id="su-email" type="email" autocomplete="email" placeholder="you@example.com">
+      </div>
+      <div class="field">
+        <label class="label" for="su-pw">パスワード</label>
+        <input class="input is-focus" id="su-pw" type="password" autocomplete="new-password" value="passw" aria-describedby="su-pw-hint">
+        <div class="meter" aria-hidden="true"><span class="on"></span><span></span><span></span></div>
+        <p class="msg" id="su-pw-hint">あと3文字(8文字以上)</p>
+      </div>
+      <button class="btn btn-gold btn-primary" type="submit">登録してはじめる</button>
+    </form>
+    <p class="switch">すでにアカウントがある方は <a href="pc-login.html">ログイン</a></p>
+  </div>
+</main>
+</body>
+</html>

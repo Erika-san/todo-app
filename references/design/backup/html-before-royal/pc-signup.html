@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ja" data-theme="blue">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>新規登録</title>
+<script>(function(){var t;try{t=new URLSearchParams(location.search).get('theme')||localStorage.getItem('todo-theme')}catch(e){}document.documentElement.setAttribute('data-theme',t==='pixel'?'pixel':'blue')})()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;family=DotGothic16&amp;family=Press+Start+2P&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="theme/tokens.css">
+<link rel="stylesheet" href="theme/icons.css">
+<link rel="stylesheet" href="theme/base.css">
+<link rel="stylesheet" href="theme/auth.css">
+<script src="theme/theme.js" defer></script>
+<style>
+/* パスワード強さメーター */
+.meter{display:flex;gap:4px;margin-top:4px}
+.meter span{flex:1;height:var(--meter-h);border-radius:var(--r-xs);background:var(--meter-off);border:var(--meter-border);transition:background-color var(--t-color)}
+.meter span.on{background:var(--meter-on);border-color:var(--meter-on)}
+</style>
+</head>
+<body>
+<div class="theme-bar">
+  <span class="ui-label" id="theme-label">テーマ</span>
+  <div class="seg theme-switch" role="group" aria-labelledby="theme-label">
+    <button type="button" data-theme-set="blue" aria-pressed="true">ブルー</button>
+    <button type="button" data-theme-set="pixel" aria-pressed="false">ピクセル</button>
+  </div>
+</div>
+<main class="auth">
+  <div class="auth-inner">
+    <div class="brand">
+      <div class="logo"><i class="ico i-logo" aria-hidden="true"></i></div>
+      <h1>アカウントを作成</h1>
+      <p>メールアドレスだけで、すぐに始められます</p>
+    </div>
+    <form class="card" novalidate>
+      <div class="field">
+        <label class="label" for="su-name">名前</label>
+        <input class="input" id="su-name" type="text" autocomplete="name" placeholder="例: Erika">
+      </div>
+      <div class="field">
+        <label class="label" for="su-email">メールアドレス</label>
+        <input class="input" id="su-email" type="email" autocomplete="email" placeholder="you@example.com">
+      </div>
+      <div class="field">
+        <label class="label" for="su-pw">パスワード</label>
+        <input class="input is-focus" id="su-pw" type="password" autocomplete="new-password" value="passw" aria-describedby="su-pw-hint">
+        <div class="meter" aria-hidden="true"><span class="on"></span><span></span><span></span></div>
+        <p class="msg" id="su-pw-hint">あと3文字(8文字以上)</p>
+      </div>
+      <button class="btn btn-primary tap" type="submit">登録してはじめる</button>
+    </form>
+    <p class="switch">すでにアカウントがある方は <a href="pc-login.html">ログイン</a></p>
+  </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,652 @@
+/* =========================================================
+   テーマトークン
+   - 画面側のCSSはこのファイルの変数だけを参照する(生の色・px値の見た目指定を持たない)
+   - テーマを足すときは [data-theme="名前"] のブロックを1つ追加し、同じ変数を全部埋める
+   ========================================================= */
+
+/* ---------- ブルー(標準) ---------- */
+:root,
+[data-theme="blue"]{
+  color-scheme:light;
+
+  /* 色: 面 */
+  --page:#FFFFFF;
+  --surface:#FFFFFF;
+  --surface-sunken:#F6F7F9;
+  --auth-bg:#F6F7F9;
+  --field:#FAFBFC;
+  --field-focus:#FFFFFF;
+  --input-bg:#FFFFFF;
+  --hover:rgba(23,24,28,.045);
+  --press:rgba(23,24,28,.075);
+  --row-hover:#F6F7F9;
+  --row-press:#F6F7F9;
+  /* 色: 線 */
+  --line:#E7E8EC;
+  --line-soft:#EDEEF1;
+  --line-strong:#D9DBE1;
+  --line-hover:#C3C6CE;
+  /* 色: 文字 */
+  --text:#17181C;
+  --text-2:#4A4E57;
+  --text-3:#6B6F7A;
+  --placeholder:#6E727D;
+  /* 色: アクセント */
+  --accent:#3B5BDB;
+  --accent-hover:#3451C7;
+  --accent-press:#2F4AC0;
+  --accent-soft:#EEF2FF;
+  --on-accent:#FFFFFF;
+  --link:#3B5BDB;
+  --link-hover:#2F4AC0;
+  --focus:#3B5BDB;
+  --selection-bg:#DBE4FF;
+  --selection-fg:#17181C;
+  /* 色: 意味 */
+  --danger:#C92A2A;
+  --danger-soft:#FFF5F5;
+  --danger-press:#FFE9E9;
+  --danger-hover-fg:#C92A2A;
+  --high:#C9420E;
+  --high-soft:rgba(201,66,14,.06);
+  --high-soft-hover:rgba(201,66,14,.1);
+  --success:#278138;
+  --meter-on:#F08C00;
+  --list-work:#3B5BDB;
+  --list-shop:#2B8A3E;
+  --progress-num:currentColor;
+  --r-bar:3px;
+  --field-border:#E7E8EC;
+  --fs-name:13px;
+  --task-pad-l-sp:8px;
+  --fs-count-lg:13px;
+  --icon-btn-hover-border:transparent;
+  --fs-avatar:12px;
+
+  /* フォント */
+  --font-body:Inter,"Noto Sans JP",system-ui,sans-serif;
+  --font-ui:Inter,"Noto Sans JP",system-ui,sans-serif;
+  --font-heading:Inter,"Noto Sans JP",system-ui,sans-serif;
+  --font-num:Inter,"Noto Sans JP",system-ui,sans-serif;
+  --smoothing:antialiased;
+  --smoothing-num:antialiased;
+  --fs-num:1em;
+  --fs-count:12px;
+  --fs-ui-s:12px;
+  --fs-ui-m:13px;
+  --fs-ui-l:14px;
+  --fs-brand:16px;
+  --fs-h1:28px;
+  --fs-h1-auth:24px;
+  --fs-h1-detail:22px;
+  --fs-h2-panel:20px;
+  --fs-btn-lg:15px;
+  --ls-btn-lg:0;
+  --ls-heading:-.015em;
+  --fw-heading:700;
+  --fw-ui-strong:600;
+  --fw-ui-medium:500;
+  --lh-heading:1.25;
+  --heading-shadow:none;
+
+  /* 角丸 */
+  --r-xs:2px;
+  --r-sm:4px;
+  --r-md:8px;
+  --r-lg:10px;
+  --r-xl:12px;
+  --r-2xl:14px;
+  --r-3xl:16px;
+  --r-full:50%;
+
+  /* 枠線 */
+  --bw:1px;
+  --bw-check:2px;
+  --divider-h:1px;
+  --divider:#EDEEF1;
+  --divider-page:#EDEEF1;
+  --pane-border:0 solid transparent;
+  --pane-divider:1px solid #E7E8EC;
+  --card-border:0 solid transparent;
+  --group-border:1px solid #E7E8EC;
+  --input-border:#D9DBE1;
+  --btn-primary-border:0 solid transparent;
+  --btn2-border:1px solid #E7E8EC;
+  --btn2-border-hover:#D9DBE1;
+  --btn-danger-border:0 solid transparent;
+  --seg-border:0 solid transparent;
+  --seg-divider:0 solid transparent;
+  --bar-border:0 solid transparent;
+  --logo-border:0 solid transparent;
+  --avatar-border:0 solid transparent;
+  --drawer-border:0 solid transparent;
+  --dock-border:1px solid #D9DBE1;
+  --meter-border:0 solid transparent;
+
+  /* 影 */
+  --ring:0 0 0 3px rgba(59,91,219,.2);
+  --ring-danger:0 0 0 3px rgba(201,42,42,.16);
+  --invalid-inset:inset 0 0 0 .5px #C92A2A;
+  --card-shadow:0 0 0 1px rgba(23,24,28,.055),0 1px 2px rgba(23,24,28,.04),0 12px 32px -16px rgba(23,24,28,.14);
+  --pane-shadow:none;
+  --dock-shadow:0 1px 2px rgba(23,24,28,.06),0 10px 28px -8px rgba(23,24,28,.18);
+  --drawer-shadow:8px 0 32px rgba(23,24,28,.16);
+  --shadow-primary:inset 0 1px 0 rgba(255,255,255,.14),0 1px 2px rgba(23,24,28,.14);
+  --shadow-primary-active:inset 0 1px 0 rgba(255,255,255,.14),0 1px 2px rgba(23,24,28,.14);
+  --shadow-btn2:none;
+  --shadow-logout:0 1px 2px rgba(23,24,28,.04);
+  --shadow-logo:inset 0 1px 0 rgba(255,255,255,.18),0 1px 2px rgba(23,24,28,.12);
+  --shadow-logo-lg:inset 0 1px 0 rgba(255,255,255,.18),0 1px 2px rgba(23,24,28,.12),0 6px 14px -6px rgba(59,91,219,.55);
+  --shadow-float:none;
+
+  /* 部品ごとの値 */
+  --app-gap:0px;
+  --app-pad:0px;
+  --main-pad:36px 40px 48px;
+  --sidebar-bg:#F6F7F9;
+  --nav-pad-l:10px;
+  --nav-active-bg:#FFFFFF;
+  --nav-active-shadow:0 0 0 1px #E7E8EC,0 1px 2px rgba(23,24,28,.05);
+  --nav-active-fg:#3B5BDB;
+  --selected-bg:#EEF2FF;
+  --selected-ring:inset 0 0 0 1px #D5DDFB;
+  --selected-meta:#666A75;
+  --task-pad-l:12px;
+  --task-inset:46px;
+  --check-r:50%;
+  --check-border:#ADB1BA;
+  --check-border-hover:#6B6F7A;
+  --check-bg:transparent;
+  --check-done-bg:#3B5BDB;
+  --check-done-hover:#3451C7;
+  --check-mark-w:60%;
+  --check-mark-h:60%;
+  --seg-bg:#F1F2F4;
+  --seg-pad:3px;
+  --seg-gap:2px;
+  --seg-fg:#4A4E57;
+  --seg-on-bg:#FFFFFF;
+  --seg-on-fg:#17181C;
+  --seg-on-shadow:0 1px 2px rgba(23,24,28,.08),0 0 0 .5px rgba(23,24,28,.05);
+  --seg-high-on-bg:#FFFFFF;
+  --seg-high-on-fg:#C9420E;
+  --seg-hover-bg:rgba(255,255,255,.55);
+  --bar-h:6px;
+  --bar-pad:0px;
+  --bar-bg:#EDEEF1;
+  --bar-fill:#3B5BDB;
+  --btn2-bg:transparent;
+  --btn2-fg:#4A4E57;
+  --btn2-hover-bg:#F6F7F9;
+  --btn-danger-bg:transparent;
+  --btn-danger-filled:#FFF5F5;
+  --logo-bg:#3B5BDB;
+  --logo-fg:#FFFFFF;
+  --avatar-bg:#DBE4FF;
+  --avatar-fg:#3451C7;
+  --avatar-font:Inter,"Noto Sans JP",system-ui,sans-serif;
+  --meter-h:4px;
+  --meter-off:#EDEEF1;
+  --due-bg:#FFF5F5;
+  --due-border:0 solid transparent;
+  --dock-bg:#FFFFFF;
+  --dock-fade:linear-gradient(to bottom,rgba(255,255,255,0),#FFFFFF 45%);
+  --scrim:rgba(23,24,28,.4);
+  --scrim-size:auto;
+  --group-bg:#FFFFFF;
+  --list-frame-bg:transparent;
+  --list-frame-border:0 solid transparent;
+  --list-frame-margin:0px;
+  --list-frame-pad:4px 12px 132px;
+  --chrome-bg:#FFFFFF;
+  --chrome-border:1px solid #E7E8EC;
+
+  /* 装飾(なし = none) */
+  --cursor-content:none;
+  --group-rule:none;
+  --icon-fit:contain;
+  --logo-lg-fit:contain;
+
+  /* アニメーション */
+  --t-color:150ms ease;
+  --t-press:160ms cubic-bezier(.23,1,.32,1);
+  --press-transform:scale(.97);
+  --press-check:scale(.9);
+  --anim-card:none;
+  --anim-drawer:drawer-in 450ms cubic-bezier(.32,.72,0,1) both;
+  --anim-scrim:scrim-in 300ms ease both;
+  --anim-cursor:none;
+}
+
+/* ---------- ピクセルアート(RPGのメニュー風) ----------
+   色は下の8色のみ。半透明や中間色は作らない */
+[data-theme="pixel"]{
+  color-scheme:dark;
+  --px-ink:#0E1030;
+  --px-win:#23307A;
+  --px-cream:#F4EFD8;
+  --px-dim:#A9B2E8;
+  --px-gold:#FFD447;
+  --px-red:#FF8A7A;
+  --px-orange:#FFAE57;
+  --px-green:#7EE08F;
+
+  --page:var(--px-win);
+  --surface:var(--px-ink);
+  --surface-sunken:var(--px-ink);
+  --auth-bg:var(--px-win);
+  --field:var(--px-win);
+  --field-focus:var(--px-win);
+  --input-bg:var(--px-win);
+  --hover:var(--px-win);
+  --press:var(--px-win);
+  --row-hover:var(--px-win);
+  --row-press:var(--px-win);
+  --line:var(--px-win);
+  --line-soft:var(--px-win);
+  --line-strong:var(--px-dim);
+  --line-hover:var(--px-cream);
+  --text:var(--px-cream);
+  --text-2:var(--px-cream);
+  --text-3:var(--px-dim);
+  --placeholder:var(--px-dim);
+  --accent:var(--px-gold);
+  --accent-hover:var(--px-cream);
+  --accent-press:var(--px-gold);
+  --accent-soft:var(--px-win);
+  --on-accent:var(--px-ink);
+  --link:var(--px-gold);
+  --link-hover:var(--px-gold);
+  --focus:var(--px-gold);
+  --selection-bg:var(--px-gold);
+  --selection-fg:var(--px-ink);
+  --danger:var(--px-red);
+  --danger-soft:var(--px-red);
+  --danger-press:var(--px-red);
+  --danger-hover-fg:var(--px-ink);
+  --high:var(--px-orange);
+  --high-soft:var(--px-ink);
+  --high-soft-hover:var(--px-ink);
+  --success:var(--px-green);
+  --meter-on:var(--px-orange);
+  --list-work:var(--px-dim);
+  --list-shop:var(--px-green);
+  --progress-num:var(--px-green);
+  --r-bar:0;
+  --field-border:var(--px-dim);
+  --fs-name:12px;
+  --task-pad-l-sp:26px;
+  --fs-count-lg:12px;
+  --icon-btn-hover-border:var(--px-cream);
+  --fs-avatar:12px;
+
+  --font-body:"Noto Sans JP",system-ui,sans-serif;
+  --font-ui:"DotGothic16","Noto Sans JP",sans-serif;
+  --font-heading:"DotGothic16","Noto Sans JP",sans-serif;
+  --font-num:"Press Start 2P","DotGothic16",monospace;
+  --smoothing:auto;
+  --smoothing-num:none;
+  --fs-num:12px;
+  --fs-count:12px;
+  --fs-ui-s:14px;
+  --fs-ui-m:16px;
+  --fs-ui-l:16px;
+  --fs-brand:18px;
+  --fs-h1:32px;
+  --fs-h1-auth:32px;
+  --fs-h1-detail:24px;
+  --fs-h2-panel:24px;
+  --fs-btn-lg:20px;
+  --ls-btn-lg:.1em;
+  --ls-heading:.02em;
+  --fw-heading:400;
+  --fw-ui-strong:400;
+  --fw-ui-medium:400;
+  --lh-heading:1.2;
+  --heading-shadow:2px 2px 0 var(--px-ink);
+
+  --r-xs:0;
+  --r-sm:0;
+  --r-md:0;
+  --r-lg:0;
+  --r-xl:0;
+  --r-2xl:0;
+  --r-3xl:0;
+  --r-full:0;
+
+  --bw:2px;
+  --bw-check:2px;
+  --divider-h:2px;
+  --divider:repeating-linear-gradient(90deg,var(--px-win) 0 4px,transparent 4px 8px);
+  --divider-page:repeating-linear-gradient(90deg,var(--px-cream) 0 4px,transparent 4px 8px);
+  --pane-border:2px solid var(--px-cream);
+  --pane-divider:2px solid var(--px-cream);
+  --card-border:2px solid var(--px-cream);
+  --group-border:2px solid var(--px-cream);
+  --input-border:var(--px-dim);
+  --btn-primary-border:2px solid var(--px-cream);
+  --btn2-border:2px solid var(--px-dim);
+  --btn2-border-hover:var(--px-cream);
+  --btn-danger-border:2px solid var(--px-red);
+  --seg-border:2px solid var(--px-cream);
+  --seg-divider:2px solid var(--px-win);
+  --bar-border:2px solid var(--px-cream);
+  --logo-border:2px solid var(--px-cream);
+  --avatar-border:2px solid var(--px-cream);
+  --drawer-border:2px solid var(--px-cream);
+  --dock-border:2px solid var(--px-cream);
+  --meter-border:2px solid var(--px-dim);
+
+  --ring:0 0 0 2px var(--px-ink),0 0 0 4px var(--px-gold);
+  --ring-danger:0 0 0 2px var(--px-ink),0 0 0 4px var(--px-red);
+  --invalid-inset:none;
+  --card-shadow:4px 4px 0 0 var(--px-ink);
+  --pane-shadow:4px 4px 0 0 var(--px-ink);
+  --dock-shadow:4px 4px 0 0 var(--px-ink);
+  --drawer-shadow:4px 0 0 0 var(--px-ink);
+  --shadow-primary:inset -4px -4px 0 0 var(--px-orange);
+  --shadow-primary-active:inset 4px 4px 0 0 var(--px-orange);
+  --shadow-btn2:inset -2px -2px 0 0 var(--px-win);
+  --shadow-logout:inset -2px -2px 0 0 var(--px-win);
+  --shadow-logo:inset -2px -2px 0 0 var(--px-orange);
+  --shadow-logo-lg:inset -4px -4px 0 0 var(--px-orange),4px 4px 0 0 var(--px-ink);
+  --shadow-float:4px 4px 0 0 var(--px-ink);
+
+  --app-gap:16px;
+  --app-pad:16px 20px 20px 16px;
+  --main-pad:28px 32px 36px;
+  --sidebar-bg:var(--px-ink);
+  --nav-pad-l:22px;
+  --nav-active-bg:var(--px-win);
+  --nav-active-shadow:inset 0 0 0 2px var(--px-gold);
+  --nav-active-fg:var(--px-gold);
+  --selected-bg:var(--px-win);
+  --selected-ring:inset 0 0 0 2px var(--px-gold);
+  --selected-meta:var(--px-dim);
+  --task-pad-l:26px;
+  --task-inset:58px;
+  --check-r:0;
+  --check-border:var(--px-dim);
+  --check-border-hover:var(--px-cream);
+  --check-bg:var(--px-ink);
+  --check-done-bg:var(--px-gold);
+  --check-done-hover:var(--px-cream);
+  --check-mark-w:14px;
+  --check-mark-h:12px;
+  --seg-bg:var(--px-ink);
+  --seg-pad:0px;
+  --seg-gap:0px;
+  --seg-fg:var(--px-cream);
+  --seg-on-bg:var(--px-gold);
+  --seg-on-fg:var(--px-ink);
+  --seg-on-shadow:none;
+  --seg-high-on-bg:var(--px-orange);
+  --seg-high-on-fg:var(--px-ink);
+  --seg-hover-bg:var(--px-win);
+  --bar-h:16px;
+  --bar-pad:2px;
+  --bar-bg:var(--px-ink);
+  --bar-fill:repeating-linear-gradient(90deg,var(--px-green) 0 6px,transparent 6px 8px);
+  --btn2-bg:var(--px-ink);
+  --btn2-fg:var(--px-cream);
+  --btn2-hover-bg:var(--px-win);
+  --btn-danger-bg:var(--px-ink);
+  --btn-danger-filled:var(--px-ink);
+  --logo-bg:var(--px-gold);
+  --logo-fg:var(--px-ink);
+  --avatar-bg:var(--px-gold);
+  --avatar-fg:var(--px-ink);
+  --avatar-font:"Press Start 2P",monospace;
+  --meter-h:10px;
+  --meter-off:var(--px-ink);
+  --due-bg:var(--px-ink);
+  --due-border:2px solid var(--px-red);
+  --dock-bg:var(--px-ink);
+  --dock-fade:none;
+  --scrim:conic-gradient(var(--px-ink) 25%,transparent 0 50%,var(--px-ink) 0 75%,transparent 0);
+  --scrim-size:4px 4px;
+  --group-bg:var(--px-ink);
+  --list-frame-bg:var(--px-ink);
+  --list-frame-border:2px solid var(--px-cream);
+  --list-frame-margin:20px 16px 0 14px;
+  --list-frame-pad:14px 8px 10px;
+  --chrome-bg:var(--px-ink);
+  --chrome-border:2px solid var(--px-cream);
+
+  --cursor-content:"";
+  --group-rule:"";
+  --icon-fit:auto;
+  --logo-lg-fit:27px 21px;
+
+  --t-color:0s;
+  --t-press:80ms steps(2);
+  --press-transform:translate(2px,2px);
+  --press-check:translate(2px,2px);
+  --anim-card:win-open 240ms steps(4) both;
+  --anim-drawer:drawer-in 300ms steps(6) both;
+  --anim-scrim:scrim-in 240ms steps(3) both;
+  --anim-cursor:bob 1s steps(1) infinite;
+}
+
+/* ---------- ピクセル貴族(royal): 王家の書斎で使う、ドット絵の羊皮紙の手帳 ----------
+   色は下の8色のみ。羊皮紙にインクで書き、金の罫と封蝋の赤で飾る */
+[data-theme="royal"]{
+  color-scheme:light;
+  --ry-parch:#F4E7C5;  /* 羊皮紙: ウィンドウ地 */
+  --ry-vellum:#E6D2A2; /* 古い羊皮紙: 画面地・選択行 */
+  --ry-ink:#2A1810;    /* 没食子インク: 本文・枠・影 */
+  --ry-sepia:#6A4A30;  /* セピア: 補足文字 */
+  --ry-wine:#8A1C2B;   /* 封蝋のワインレッド: 期限切れ・削除 */
+  --ry-navy:#1E2D5E;   /* ロイヤルネイビー: 主ボタン・選択 */
+  --ry-gold:#94681C;   /* 古金: 装飾の罫・優先度 高 */
+  --ry-green:#2E5E3A;  /* 森の緑: 保存・買い物 */
+
+  --page:var(--ry-vellum);
+  --surface:var(--ry-parch);
+  --surface-sunken:var(--ry-parch);
+  --auth-bg:var(--ry-vellum);
+  --field:var(--ry-vellum);
+  --field-focus:var(--ry-vellum);
+  --input-bg:var(--ry-vellum);
+  --hover:var(--ry-vellum);
+  --press:var(--ry-vellum);
+  --row-hover:var(--ry-vellum);
+  --row-press:var(--ry-vellum);
+  --line:var(--ry-vellum);
+  --line-soft:var(--ry-vellum);
+  --line-strong:var(--ry-sepia);
+  --line-hover:var(--ry-ink);
+  --text:var(--ry-ink);
+  --text-2:var(--ry-ink);
+  --text-3:var(--ry-sepia);
+  --placeholder:var(--ry-sepia);
+  --accent:var(--ry-navy);
+  --accent-hover:var(--ry-wine);
+  --accent-press:var(--ry-navy);
+  --accent-soft:var(--ry-vellum);
+  --on-accent:var(--ry-parch);
+  --link:var(--ry-navy);
+  --link-hover:var(--ry-wine);
+  --focus:var(--ry-navy);
+  --selection-bg:var(--ry-navy);
+  --selection-fg:var(--ry-parch);
+  --danger:var(--ry-wine);
+  --danger-soft:var(--ry-wine);
+  --danger-press:var(--ry-wine);
+  --danger-hover-fg:var(--ry-parch);
+  --high:var(--ry-gold);
+  --high-soft:var(--ry-parch);
+  --high-soft-hover:var(--ry-parch);
+  --success:var(--ry-green);
+  --meter-on:var(--ry-gold);
+  --list-work:var(--ry-navy);
+  --list-shop:var(--ry-green);
+  --progress-num:var(--ry-navy);
+  --r-bar:0;
+  --field-border:var(--ry-sepia);
+  --fs-name:15px;
+  --task-pad-l-sp:26px;
+  --fs-count-lg:14px;
+  --icon-btn-hover-border:var(--ry-ink);
+  --fs-avatar:22px;
+
+  /* 和文はドット、英字の見出し・ロゴはドットのブラックレター */
+  --font-body:"Noto Sans JP",system-ui,sans-serif;
+  --font-ui:"DotGothic16","Noto Sans JP",sans-serif;
+  --font-heading:"Jacquard 24","DotGothic16","Noto Sans JP",serif;
+  --font-num:"DotGothic16","Noto Sans JP",sans-serif;
+  --smoothing:auto;
+  --smoothing-num:none;
+  --fs-num:1em;
+  --fs-count:14px;
+  --fs-ui-s:14px;
+  --fs-ui-m:16px;
+  --fs-ui-l:16px;
+  --fs-brand:24px;
+  --fs-h1:32px;
+  --fs-h1-auth:32px;
+  --fs-h1-detail:24px;
+  --fs-h2-panel:24px;
+  --fs-btn-lg:20px;
+  --ls-btn-lg:.2em;
+  --ls-heading:.04em;
+  --fw-heading:400;
+  --fw-ui-strong:400;
+  --fw-ui-medium:400;
+  --lh-heading:1.2;
+  --heading-shadow:2px 2px 0 var(--ry-gold);
+
+  --r-xs:0;
+  --r-sm:0;
+  --r-md:0;
+  --r-lg:0;
+  --r-xl:0;
+  --r-2xl:0;
+  --r-3xl:0;
+  --r-full:0;
+
+  --bw:2px;
+  --bw-check:2px;
+  --divider-h:2px;
+  --divider:repeating-linear-gradient(90deg,var(--ry-gold) 0 2px,transparent 2px 6px);
+  --divider-page:repeating-linear-gradient(90deg,var(--ry-sepia) 0 2px,transparent 2px 6px);
+  --pane-border:2px solid var(--ry-ink);
+  --pane-divider:2px solid var(--ry-ink);
+  --card-border:2px solid var(--ry-ink);
+  --group-border:2px solid var(--ry-ink);
+  --input-border:var(--ry-sepia);
+  --btn-primary-border:2px solid var(--ry-ink);
+  --btn2-border:2px solid var(--ry-sepia);
+  --btn2-border-hover:var(--ry-ink);
+  --btn-danger-border:2px solid var(--ry-wine);
+  --seg-border:2px solid var(--ry-ink);
+  --seg-divider:2px solid var(--ry-vellum);
+  --bar-border:2px solid var(--ry-ink);
+  --logo-border:2px solid var(--ry-ink);
+  --avatar-border:2px solid var(--ry-ink);
+  --drawer-border:2px solid var(--ry-ink);
+  --dock-border:2px solid var(--ry-ink);
+  --meter-border:2px solid var(--ry-sepia);
+
+  /* 枠の内側に金の罫(彩飾写本の縁取り)+ インクの落ち影 */
+  --ring:0 0 0 2px var(--ry-parch),0 0 0 4px var(--ry-navy);
+  --ring-danger:0 0 0 2px var(--ry-parch),0 0 0 4px var(--ry-wine);
+  --invalid-inset:none;
+  --card-shadow:inset 0 0 0 4px var(--ry-parch),inset 0 0 0 6px var(--ry-gold),4px 4px 0 0 var(--ry-ink);
+  --pane-shadow:inset 0 0 0 4px var(--ry-parch),inset 0 0 0 6px var(--ry-gold),4px 4px 0 0 var(--ry-ink);
+  --dock-shadow:4px 4px 0 0 var(--ry-ink);
+  --drawer-shadow:inset -4px 0 0 0 var(--ry-parch),inset -6px 0 0 0 var(--ry-gold),4px 0 0 0 var(--ry-ink);
+  --shadow-primary:inset -4px -4px 0 0 var(--ry-ink),inset 4px 4px 0 0 var(--ry-gold);
+  --shadow-primary-active:inset 4px 4px 0 0 var(--ry-ink);
+  --shadow-btn2:inset -2px -2px 0 0 var(--ry-vellum);
+  --shadow-logout:inset -2px -2px 0 0 var(--ry-vellum);
+  --shadow-logo:inset -2px -2px 0 0 var(--ry-ink),inset 2px 2px 0 0 var(--ry-gold);
+  --shadow-logo-lg:inset -4px -4px 0 0 var(--ry-ink),inset 4px 4px 0 0 var(--ry-gold),4px 4px 0 0 var(--ry-ink);
+  --shadow-float:4px 4px 0 0 var(--ry-ink);
+
+  --app-gap:16px;
+  --app-pad:16px 20px 20px 16px;
+  --main-pad:32px 36px 40px;
+  --sidebar-bg:var(--ry-parch);
+  --nav-pad-l:22px;
+  --nav-active-bg:var(--ry-vellum);
+  --nav-active-shadow:inset 0 0 0 2px var(--ry-navy);
+  --nav-active-fg:var(--ry-navy);
+  --selected-bg:var(--ry-vellum);
+  --selected-ring:inset 0 0 0 2px var(--ry-navy);
+  --selected-meta:var(--ry-sepia);
+  --task-pad-l:26px;
+  --task-inset:58px;
+  --check-r:0;
+  --check-border:var(--ry-sepia);
+  --check-border-hover:var(--ry-ink);
+  --check-bg:var(--ry-parch);
+  --check-done-bg:var(--ry-navy);
+  --check-done-hover:var(--ry-wine);
+  --check-mark-w:14px;
+  --check-mark-h:12px;
+  --seg-bg:var(--ry-parch);
+  --seg-pad:0px;
+  --seg-gap:0px;
+  --seg-fg:var(--ry-ink);
+  --seg-on-bg:var(--ry-navy);
+  --seg-on-fg:var(--ry-parch);
+  --seg-on-shadow:inset 0 -2px 0 0 var(--ry-gold);
+  --seg-high-on-bg:var(--ry-wine);
+  --seg-high-on-fg:var(--ry-parch);
+  --seg-hover-bg:var(--ry-vellum);
+  --bar-h:16px;
+  --bar-pad:2px;
+  --bar-bg:var(--ry-parch);
+  --bar-fill:repeating-linear-gradient(90deg,var(--ry-gold) 0 6px,transparent 6px 8px);
+  --btn2-bg:var(--ry-parch);
+  --btn2-fg:var(--ry-ink);
+  --btn2-hover-bg:var(--ry-vellum);
+  --btn-danger-bg:var(--ry-parch);
+  --btn-danger-filled:var(--ry-parch);
+  --logo-bg:var(--ry-navy);
+  --logo-fg:var(--ry-parch);
+  --avatar-bg:var(--ry-wine);
+  --avatar-fg:var(--ry-parch);
+  --avatar-font:"Jacquard 24",serif;
+  --meter-h:10px;
+  --meter-off:var(--ry-parch);
+  --due-bg:var(--ry-parch);
+  --due-border:2px solid var(--ry-wine);
+  --dock-bg:var(--ry-parch);
+  --dock-fade:none;
+  --scrim:conic-gradient(var(--ry-ink) 25%,transparent 0 50%,var(--ry-ink) 0 75%,transparent 0);
+  --scrim-size:4px 4px;
+  --group-bg:var(--ry-parch);
+  --list-frame-bg:var(--ry-parch);
+  --list-frame-border:2px solid var(--ry-ink);
+  --list-frame-margin:20px 16px 0 14px;
+  --list-frame-pad:14px 8px 10px;
+  --chrome-bg:var(--ry-parch);
+  --chrome-border:2px solid var(--ry-ink);
+
+  --cursor-content:"";
+  --group-rule:"";
+  --icon-fit:auto;
+  --logo-lg-fit:27px 21px;
+
+  /* 巻物が上からほどけるように開く(6コマ) */
+  --t-color:0s;
+  --t-press:80ms steps(2);
+  --press-transform:translate(2px,2px);
+  --press-check:translate(2px,2px);
+  --anim-card:scroll-open 360ms steps(6) both;
+  --anim-drawer:drawer-in 300ms steps(6) both;
+  --anim-scrim:scrim-in 240ms steps(3) both;
+  --anim-cursor:bob 1s steps(1) infinite;
+}
+
+@media (prefers-reduced-motion:reduce){
+  :root,[data-theme]{
+    --press-transform:none;
+    --press-check:none;
+    --anim-card:none;
+    --anim-drawer:none;
+    --anim-cursor:none;
+  }
+}

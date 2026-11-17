@@ -1,0 +1,57 @@
+/* アプリ画面の共通部品。値はすべてトークン */
+
+/* ナビ項目(サイドバー/ドロワー共通) */
+.nav-item{position:relative;display:flex;align-items:center;gap:10px;padding:0 10px 0 var(--nav-pad-l);height:38px;border-radius:var(--r-md);font-family:var(--font-ui);font-size:var(--fs-ui-l);line-height:1;color:var(--text);text-align:left;transition:background-color var(--t-color),box-shadow var(--t-color)}
+.nav-item .ico{color:var(--text-3)}
+.nav-item .count{margin-left:auto;font-family:var(--font-num);font-size:var(--fs-count);color:var(--text-3);font-variant-numeric:tabular-nums;-webkit-font-smoothing:var(--smoothing-num)}
+.nav-item .list-dot{width:10px;height:10px;border-radius:var(--r-sm);margin:0 4px;flex-shrink:0;background:var(--c)}
+.nav-item.is-muted{color:var(--text-3)}
+.nav-item[aria-current="page"]{background:var(--nav-active-bg);font-weight:var(--fw-ui-strong);box-shadow:var(--nav-active-shadow)}
+.nav-item[aria-current="page"] .ico,.nav-item[aria-current="page"] .count{color:var(--nav-active-fg)}
+.nav-item[aria-current="page"] .count{font-weight:var(--fw-ui-strong)}
+.nav-item:not([aria-current="page"]):active{background:var(--press)}
+.group-label{font-family:var(--font-ui);font-size:var(--fs-ui-s);color:var(--text-3);font-weight:var(--fw-ui-strong);padding:20px 10px 6px var(--nav-pad-l);letter-spacing:.02em;display:flex;align-items:center;gap:8px}
+.group-label::after{content:var(--group-rule);flex:1;height:var(--divider-h);background:var(--divider-page)}
+.logo-sm{width:28px;height:28px;border-radius:var(--r-md);background:var(--logo-bg);color:var(--logo-fg);border:var(--logo-border);box-shadow:var(--shadow-logo);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.brand-name{font-family:var(--font-heading);font-weight:var(--fw-heading);font-size:var(--fs-brand);letter-spacing:-.01em;line-height:1}
+.avatar{border-radius:var(--r-full);background:var(--avatar-bg);color:var(--avatar-fg);border:var(--avatar-border);display:flex;align-items:center;justify-content:center;font-family:var(--avatar-font);font-weight:var(--fw-heading);font-size:var(--fs-avatar);line-height:1;flex-shrink:0;-webkit-font-smoothing:var(--smoothing-num)}
+
+/* 完了チェック */
+.check{position:relative;width:22px;height:22px;border-radius:var(--check-r);border:var(--bw-check) solid var(--check-border);background:var(--check-bg);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:transparent;transition:border-color var(--t-color),background-color var(--t-color),color var(--t-color),transform var(--t-press)}
+.check::before{content:"";position:absolute;inset:-9px;border-radius:var(--r-full)}
+.check::after{content:"";width:var(--check-mark-w);height:var(--check-mark-h);background:currentColor;-webkit-mask:var(--icon-check) center/var(--icon-fit) no-repeat;mask:var(--icon-check) center/var(--icon-fit) no-repeat}
+.check.is-high{border-color:var(--high);background:var(--high-soft)}
+.check.is-done{background:var(--check-done-bg);border-color:var(--check-done-bg);color:var(--on-accent)}
+button.check:active{transform:var(--press-check)}
+
+/* タスク行 */
+.task{position:relative;display:flex;align-items:center;gap:12px;padding:12px 12px 12px var(--task-pad-l);border-radius:var(--r-lg);color:var(--text);transition:background-color var(--t-color)}
+.task::after{content:"";position:absolute;left:var(--task-inset);right:12px;bottom:0;height:var(--divider-h);background:var(--divider);transition:opacity var(--t-color)}
+.task:last-child::after,.task.is-selected::after,.task:has(+ .task.is-selected)::after{opacity:0}
+.task.is-selected{background:var(--selected-bg);box-shadow:var(--selected-ring)}
+.task.is-selected .meta{color:var(--selected-meta)}
+.task-body{flex:1;min-width:0}
+.task-title{font-size:15px;line-height:1.45}
+.task-title.is-strong{font-weight:500}
+.task.is-done .task-title{color:var(--text-3);text-decoration:line-through;text-decoration-color:var(--check-border);text-decoration-thickness:var(--divider-h)}
+.meta{display:flex;flex-wrap:wrap;gap:2px 12px;margin-top:3px;font-size:12px;line-height:1.5;color:var(--text-3)}
+.meta>span{display:inline-flex;align-items:center;gap:5px}
+.meta .is-overdue{color:var(--danger);font-family:var(--font-ui);font-size:var(--fs-ui-s);font-weight:var(--fw-ui-strong);gap:4px}
+.flag{color:var(--high)}
+.sec-h{margin:0 0 4px;font-family:var(--font-ui);font-size:var(--fs-ui-m);font-weight:var(--fw-ui-strong);letter-spacing:0;text-shadow:none;color:var(--text-2);display:flex;align-items:center;gap:8px}
+.sec-h .n{font-weight:500;color:var(--text-3)}
+.sec-h.is-danger,.sec-h.is-danger .n{color:var(--danger)}
+
+/* 進捗バー(ピクセルではHPバー) */
+.bar{flex:1;height:var(--bar-h);padding:var(--bar-pad);border-radius:var(--r-bar);background:var(--bar-bg);border:var(--bar-border);overflow:hidden}
+.bar>i{display:block;height:100%;border-radius:inherit;background:var(--bar-fill)}
+.progress .label .n{color:var(--progress-num)}
+
+@media (hover:hover) and (pointer:fine){
+  .nav-item:not([aria-current="page"]):hover{background:var(--hover)}
+  .check:hover{border-color:var(--check-border-hover);color:var(--check-border-hover)}
+  .check.is-high:hover{border-color:var(--high);color:var(--high);background:var(--high-soft-hover)}
+  .check.is-done:hover{background:var(--check-done-hover);border-color:var(--check-done-hover);color:var(--on-accent)}
+  .task:not(.is-selected):hover{background:var(--row-hover)}
+  .task:hover::after,.task:has(+ .task:hover)::after{opacity:0}
+}

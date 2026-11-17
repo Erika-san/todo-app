@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>新規登録</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FFFFFF;--sunken:#F6F7F9;--fill:#F1F2F4;--field:#FAFBFC;
+  --hover:rgba(23,24,28,.045);--press:rgba(23,24,28,.075);
+  --line:#E7E8EC;--line-soft:#EDEEF1;--line-strong:#D9DBE1;--line-hover:#C3C6CE;
+  --text:#17181C;--text-2:#4A4E57;--text-3:#6B6F7A;--placeholder:#6E727D;
+  --accent:#3B5BDB;--accent-hover:#3451C7;--accent-press:#2F4AC0;--accent-soft:#EEF2FF;--accent-tint:#DBE4FF;
+  --danger:#C92A2A;--danger-soft:#FFF5F5;--danger-soft-2:#FFE9E9;
+  --high:#C9420E;--success:#278138;--check:#ADB1BA;
+  --ring:0 0 0 3px rgba(59,91,219,.2);
+  --ease-out:cubic-bezier(.23,1,.32,1);
+  --ease-drawer:cubic-bezier(.32,.72,0,1);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,'Noto Sans JP',system-ui,sans-serif;font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+::selection{background:var(--accent-tint);color:var(--text)}
+h1,h2{font-feature-settings:"palt";text-wrap:balance}
+a{color:var(--accent);text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;margin:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+a{-webkit-tap-highlight-color:transparent}
+input,textarea{font:inherit;color:inherit;caret-color:var(--accent)}
+::placeholder{color:var(--placeholder);opacity:1}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.num{font-variant-numeric:tabular-nums}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.swatch{width:8px;height:8px;border-radius:2px;flex-shrink:0;background:var(--c,var(--accent))}
+/* 押した感触: 160ms ease-out で 0.97 に */
+.tap{transition:transform 160ms var(--ease-out),background-color 150ms ease,color 150ms ease,border-color 150ms ease,box-shadow 150ms ease}
+.tap:active{transform:scale(.97)}
+@media (prefers-reduced-motion:reduce){.tap:active{transform:none}}
+.auth{min-height:100vh;min-height:100dvh;background:var(--sunken);display:flex;align-items:center;justify-content:center;padding:40px 20px}
+.auth-inner{width:100%;max-width:400px}
+.brand{display:flex;flex-direction:column;align-items:center;text-align:center;margin-bottom:28px}
+.logo{width:44px;height:44px;border-radius:12px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;margin-bottom:16px;box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 1px 2px rgba(23,24,28,.12),0 6px 14px -6px rgba(59,91,219,.55)}
+.brand h1{margin:0;font-size:24px;font-weight:700;line-height:1.35;letter-spacing:-.01em}
+.brand p{margin:6px 0 0;color:var(--text-3)}
+.card{background:#fff;border-radius:16px;padding:28px;display:flex;flex-direction:column;gap:20px;box-shadow:0 0 0 1px rgba(23,24,28,.055),0 1px 2px rgba(23,24,28,.04),0 12px 32px -16px rgba(23,24,28,.14)}
+.field{display:flex;flex-direction:column;gap:6px}
+.field-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.label{font-size:13px;font-weight:600;color:var(--text)}
+.link-sm{font-size:12px;border-radius:4px;transition:color 150ms ease}
+.input{height:44px;width:100%;padding:0 14px;border:1px solid var(--line-strong);border-radius:10px;background:#fff;font-size:15px;outline:none;transition:border-color 150ms ease,box-shadow 150ms ease}
+.input:focus,.input.is-focus{border-color:var(--accent);box-shadow:var(--ring)}
+.input[aria-invalid="true"]{border-color:var(--danger);box-shadow:inset 0 0 0 .5px var(--danger)}
+.input[aria-invalid="true"]:focus{box-shadow:inset 0 0 0 .5px var(--danger),0 0 0 3px rgba(201,42,42,.16)}
+.msg{margin:0;font-size:12px;line-height:1.5;display:flex;align-items:center;gap:6px;color:var(--text-3)}
+.msg.is-error{color:var(--danger)}
+.msg svg{flex-shrink:0}
+.btn-primary{margin-top:4px;height:46px;width:100%;border-radius:10px;background:var(--accent);color:#fff;font-weight:600;font-size:15px;box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 1px 2px rgba(23,24,28,.14)}
+.btn-primary:active{background:var(--accent-press)}
+.switch{text-align:center;margin:20px 0 0;color:var(--text-3);font-size:13px}
+.switch a{font-weight:600;border-radius:4px;transition:color 150ms ease}
+@media (hover:hover) and (pointer:fine){
+  .btn-primary:hover{background:var(--accent-hover)}
+  .link-sm:hover,.switch a:hover{color:var(--accent-press);text-decoration:underline;text-underline-offset:3px}
+  .input:hover:not(:focus):not(.is-focus):not([aria-invalid="true"]){border-color:var(--line-hover)}
+}
+.meter{display:flex;gap:4px;margin-top:4px}
+.meter span{flex:1;height:4px;border-radius:2px;background:var(--line-soft);transition:background-color 200ms ease}
+.meter span.on{background:#F08C00}
+</style>
+</head>
+<body>
+<main class="auth">
+  <div class="auth-inner">
+    <div class="brand">
+      <div class="logo">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>
+      </div>
+      <h1>アカウントを作成</h1>
+      <p>メールアドレスだけで、すぐに始められます</p>
+    </div>
+    <form class="card" novalidate>
+      <div class="field">
+        <label class="label" for="su-name">名前</label>
+        <input class="input" id="su-name" type="text" autocomplete="name" placeholder="例: Erika">
+      </div>
+      <div class="field">
+        <label class="label" for="su-email">メールアドレス</label>
+        <input class="input" id="su-email" type="email" autocomplete="email" placeholder="you@example.com">
+      </div>
+      <div class="field">
+        <label class="label" for="su-pw">パスワード</label>
+        <input class="input is-focus" id="su-pw" type="password" autocomplete="new-password" value="passw" aria-describedby="su-pw-hint">
+        <div class="meter" aria-hidden="true"><span class="on"></span><span></span><span></span></div>
+        <p class="msg num" id="su-pw-hint">あと3文字(8文字以上)</p>
+      </div>
+      <button class="btn-primary tap" type="submit">登録してはじめる</button>
+    </form>
+    <p class="switch">すでにアカウントがある方は <a href="pc-login.html">ログイン</a></p>
+  </div>
+</main>
+</body>
+</html>

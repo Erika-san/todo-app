@@ -1,0 +1,59 @@
+/* アプリ全体の土台。色・フォントなどの値は tokens.css(blue テーマ)の変数だけを使う */
+@import "../styles/tokens.css";
+
+/* next/font で読み込んだ Inter / Noto Sans JP は内部名が変わるため、
+   フォントのトークンを next/font の変数(layout.tsx で設定)に向け直す。使う書体はお手本と同じ */
+:root {
+  --font-body: var(--font-inter), var(--font-noto-sans-jp), system-ui, sans-serif;
+  --font-ui: var(--font-body);
+  --font-heading: var(--font-body);
+  --font-num: var(--font-body);
+  --avatar-font: var(--font-body);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  background: var(--page);
+  color: var(--text);
+}
+
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.55;
+  -webkit-font-smoothing: var(--smoothing);
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: var(--selection-bg);
+  color: var(--selection-fg);
+}
+
+h1,
+h2 {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-weight: var(--fw-heading);
+  letter-spacing: var(--ls-heading);
+  font-feature-settings: "palt";
+}
+
+a {
+  color: var(--link);
+  text-decoration: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}

@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>タスク一覧と詳細パネル</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FFFFFF;--sunken:#F6F7F9;--fill:#F1F2F4;--field:#FAFBFC;
+  --hover:rgba(23,24,28,.045);--press:rgba(23,24,28,.075);
+  --line:#E7E8EC;--line-soft:#EDEEF1;--line-strong:#D9DBE1;--line-hover:#C3C6CE;
+  --text:#17181C;--text-2:#4A4E57;--text-3:#6B6F7A;--placeholder:#6E727D;
+  --accent:#3B5BDB;--accent-hover:#3451C7;--accent-press:#2F4AC0;--accent-soft:#EEF2FF;--accent-tint:#DBE4FF;
+  --danger:#C92A2A;--danger-soft:#FFF5F5;--danger-soft-2:#FFE9E9;
+  --high:#C9420E;--success:#278138;--check:#ADB1BA;
+  --ring:0 0 0 3px rgba(59,91,219,.2);
+  --ease-out:cubic-bezier(.23,1,.32,1);
+  --ease-drawer:cubic-bezier(.32,.72,0,1);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,'Noto Sans JP',system-ui,sans-serif;font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+::selection{background:var(--accent-tint);color:var(--text)}
+h1,h2{font-feature-settings:"palt";text-wrap:balance}
+a{color:var(--accent);text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;margin:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+a{-webkit-tap-highlight-color:transparent}
+input,textarea{font:inherit;color:inherit;caret-color:var(--accent)}
+::placeholder{color:var(--placeholder);opacity:1}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.num{font-variant-numeric:tabular-nums}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.swatch{width:8px;height:8px;border-radius:2px;flex-shrink:0;background:var(--c,var(--accent))}
+/* 押した感触: 160ms ease-out で 0.97 に */
+.tap{transition:transform 160ms var(--ease-out),background-color 150ms ease,color 150ms ease,border-color 150ms ease,box-shadow 150ms ease}
+.tap:active{transform:scale(.97)}
+@media (prefers-reduced-motion:reduce){.tap:active{transform:none}}
+/* ナビ項目(サイドバー/ドロワー共通) */
+.nav-item{display:flex;align-items:center;gap:10px;padding:0 10px;height:38px;border-radius:8px;color:var(--text);transition:background-color 150ms ease,box-shadow 150ms ease}
+.nav-item .ico{color:var(--text-3);flex-shrink:0}
+.nav-item .count{margin-left:auto;font-size:12px;color:var(--text-3);font-variant-numeric:tabular-nums}
+.nav-item .list-dot{width:10px;height:10px;border-radius:3px;margin:0 4px;flex-shrink:0;background:var(--c)}
+.nav-item.is-muted{color:var(--text-3)}
+.nav-item[aria-current="page"]{background:#fff;font-weight:600;box-shadow:0 0 0 1px var(--line),0 1px 2px rgba(23,24,28,.05)}
+.nav-item[aria-current="page"] .ico,.nav-item[aria-current="page"] .count{color:var(--accent)}
+.nav-item[aria-current="page"] .count{font-weight:600}
+.nav-item:not([aria-current="page"]):active{background:var(--press)}
+.group-label{font-size:12px;color:var(--text-3);font-weight:600;padding:20px 10px 6px;letter-spacing:.02em}
+.logo-sm{width:28px;height:28px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0;box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 1px 2px rgba(23,24,28,.12)}
+.brand-name{font-weight:700;font-size:16px;letter-spacing:-.01em}
+.avatar{border-radius:50%;background:var(--accent-tint);color:var(--accent-hover);display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0}
+.icon-btn{border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--text-3);flex-shrink:0}
+.icon-btn:active{background:var(--press)}
+
+/* 完了チェック */
+.check{position:relative;width:22px;height:22px;border-radius:50%;border:2px solid var(--check);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:transparent;transition:border-color 150ms ease,background-color 150ms ease,color 150ms ease,transform 160ms var(--ease-out)}
+.check::before{content:"";position:absolute;inset:-9px;border-radius:50%}
+.check::after{content:"";width:60%;height:60%;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5 9-10'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5 9-10'/%3E%3C/svg%3E") center/contain no-repeat}
+.check.is-high{border-color:var(--high);background:rgba(201,66,14,.06)}
+.check.is-done{background:var(--accent);border-color:var(--accent);color:#fff}
+.check.is-done::after{display:none}
+button.check:active{transform:scale(.9)}
+
+/* セグメント(絞り込み・優先度) */
+.seg{display:flex;gap:2px;padding:3px;background:var(--fill);border-radius:10px}
+.seg>button{border-radius:8px;color:var(--text-2);font-size:13px;white-space:nowrap;transition:background-color 150ms ease,color 150ms ease,box-shadow 150ms ease}
+.seg>button[aria-selected="true"],.seg>button[aria-pressed="true"]{background:#fff;color:var(--text);font-weight:600;box-shadow:0 1px 2px rgba(23,24,28,.08),0 0 0 .5px rgba(23,24,28,.05)}
+.seg>button.is-high[aria-pressed="true"]{color:var(--high)}
+
+/* タスク行 */
+.task{--inset:46px;position:relative;display:flex;align-items:center;gap:12px;padding:12px;border-radius:10px;color:var(--text);transition:background-color 150ms ease}
+.task::after{content:"";position:absolute;left:var(--inset);right:12px;bottom:0;height:1px;background:var(--line-soft);transition:opacity 150ms ease}
+.task:last-child::after,.task.is-selected::after,.task:has(+ .task.is-selected)::after{opacity:0}
+.task.is-selected{background:var(--accent-soft);box-shadow:inset 0 0 0 1px #D5DDFB}
+.task.is-selected .meta{color:#666A75}
+.task-body{flex:1;min-width:0}
+.task-title{font-size:15px;line-height:1.45}
+.task-title.is-strong{font-weight:500}
+.task.is-done .task-title{color:var(--text-3);text-decoration:line-through;text-decoration-color:var(--check)}
+.meta{display:flex;flex-wrap:wrap;gap:2px 12px;margin-top:3px;font-size:12px;line-height:1.5;color:var(--text-3)}
+.meta>span{display:inline-flex;align-items:center;gap:5px}
+.meta .is-overdue{color:var(--danger);font-weight:600;gap:4px}
+.flag{flex-shrink:0;color:var(--high)}
+.sec-h{margin:0 0 4px;font-size:13px;font-weight:600;color:var(--text-2);display:flex;align-items:center;gap:6px}
+.sec-h .n{font-weight:500;color:var(--text-3);font-variant-numeric:tabular-nums}
+.sec-h.is-danger,.sec-h.is-danger .n{color:var(--danger)}
+
+/* 進捗バー */
+.bar{flex:1;height:6px;border-radius:3px;background:var(--line-soft);overflow:hidden}
+.bar>i{display:block;height:100%;border-radius:3px;background:var(--accent)}
+
+@media (hover:hover) and (pointer:fine){
+  .nav-item:not([aria-current="page"]):hover{background:var(--hover)}
+  .icon-btn:hover{background:var(--hover);color:var(--text)}
+  .check:hover{border-color:var(--text-3);color:var(--text-3)}
+  .check.is-high:hover{border-color:var(--high);color:var(--high);background:rgba(201,66,14,.1)}
+  .check.is-done:hover{background:var(--accent-hover);border-color:var(--accent-hover);color:#fff}
+  .seg>button:not([aria-selected="true"]):not([aria-pressed="true"]):hover{color:var(--text);background:rgba(255,255,255,.55)}
+  .task:not(.is-selected):hover{background:var(--sunken)}
+  .task:hover::after,.task:has(+ .task:hover)::after{opacity:0}
+}
+@media (prefers-reduced-motion:reduce){button.check:active{transform:none}}
+.app{min-height:100vh;display:flex;flex-wrap:wrap}
+
+/* サイドバー */
+.sidebar{flex:1 1 248px;max-width:280px;min-width:220px;background:var(--sunken);border-right:1px solid var(--line);padding:20px 12px 16px;display:flex;flex-direction:column;gap:2px}
+.sidebar .brand-row{display:flex;align-items:center;gap:10px;padding:0 10px 20px}
+.account{margin-top:auto;display:flex;align-items:center;gap:10px;padding:12px 2px 0 10px;border-top:1px solid var(--line)}
+.account .avatar{width:32px;height:32px;font-size:13px}
+.account .who{flex:1;min-width:0}
+.account .name{font-weight:600;font-size:13px}
+.account .mail{font-size:12px;color:var(--text-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.account .icon-btn{width:32px;height:32px}
+
+/* メイン */
+.main{flex:999 1 480px;min-width:0;padding:36px 40px 48px}
+.main-inner{max-width:720px;margin:0 auto}
+.page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px 24px;flex-wrap:wrap}
+.title-row{display:flex;align-items:baseline;gap:12px}
+.page-head h1{margin:0;font-size:28px;font-weight:700;letter-spacing:-.015em;line-height:1.2}
+.date{font-size:13px;color:var(--text-3);font-weight:500}
+.progress{display:flex;align-items:center;gap:10px;min-width:200px;padding-bottom:5px}
+.progress .label{font-size:13px;color:var(--text-3);white-space:nowrap}
+
+.quick{margin-top:24px;border:1px solid var(--line-strong);border-radius:12px;padding:6px 6px 6px 14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:#fff;transition:border-color 150ms ease,box-shadow 150ms ease}
+.quick:focus-within{border-color:var(--accent);box-shadow:var(--ring)}
+.quick>svg{flex-shrink:0;color:var(--accent)}
+.quick input{flex:1 1 200px;border:0;outline:none;padding:9px 0;font-size:15px;background:transparent}
+.chip{display:flex;align-items:center;gap:6px;height:34px;padding:0 10px;border-radius:8px;border:1px solid var(--line);color:var(--text-2);font-size:13px}
+.chip svg{color:var(--text-3)}
+.btn-add{height:34px;padding:0 16px;border-radius:8px;background:var(--accent);color:#fff;font-weight:600;font-size:13px;box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 1px 2px rgba(23,24,28,.12)}
+.btn-add:active{background:var(--accent-press)}
+
+.tabs{display:inline-flex;margin-top:20px}
+.tabs>button{height:32px;padding:0 14px}
+
+.section{margin-top:28px}
+.section .sec-h{padding:0}
+.rows{margin:0}
+
+.toggle{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 8px;margin:0 0 4px -8px;border-radius:6px;font-size:13px;font-weight:600;color:var(--text-3)}
+.toggle:active{background:var(--press)}
+
+/* 詳細パネル */
+.panel{flex:1 1 360px;max-width:380px;border-left:1px solid var(--line);display:flex;flex-direction:column;background:#fff}
+.panel-head{display:flex;align-items:center;justify-content:space-between;padding:14px 14px 6px 24px}
+.crumb{font-size:12px;color:var(--text-3);display:flex;align-items:center;gap:6px}
+.panel-head .icon-btn{width:36px;height:36px}
+.panel-body{padding:4px 24px 24px;flex:1}
+.title-wrap{display:flex;gap:12px;align-items:flex-start}
+.title-wrap .check{width:24px;height:24px;margin-top:3px}
+.panel h2{margin:0;font-size:20px;font-weight:700;line-height:1.45;letter-spacing:-.01em}
+.props{margin:24px 0 0;display:grid;grid-template-columns:72px minmax(0,1fr);row-gap:12px;align-items:center;font-size:13px}
+.props dt{color:var(--text-3)}
+.props dd{margin:0}
+.due{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 10px;border-radius:8px;background:var(--danger-soft);color:var(--danger);font-weight:600}
+.prio{width:fit-content;gap:4px}
+.prio>button{height:30px;padding:0 12px}
+.select-btn{display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 8px 0 10px;border-radius:8px;border:1px solid var(--line);background:#fff}
+.select-btn svg{color:var(--text-3)}
+.memo-label{display:block;margin-top:24px;font-size:13px;color:var(--text-3)}
+.memo{display:block;margin-top:8px;width:100%;border:1px solid var(--line);border-radius:10px;padding:12px;resize:vertical;font-size:14px;line-height:1.7;background:var(--field);outline:none;transition:border-color 150ms ease,box-shadow 150ms ease,background-color 150ms ease}
+.memo:focus{border-color:var(--accent);box-shadow:var(--ring);background:#fff}
+.counter{text-align:right;font-size:12px;color:var(--text-3);margin-top:6px}
+.panel-foot{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 10px 24px;border-top:1px solid var(--line);font-size:12px;color:var(--text-3)}
+.saved{display:flex;align-items:center;gap:6px}
+.saved svg{color:var(--success)}
+.btn-danger{display:flex;align-items:center;gap:6px;height:34px;padding:0 10px;border-radius:8px;color:var(--danger);font-size:13px;font-weight:500}
+.btn-danger:active{background:var(--danger-soft-2)}
+
+@media (hover:hover) and (pointer:fine){
+  .chip:hover{background:var(--sunken);border-color:var(--line-strong);color:var(--text)}
+  .btn-add:hover{background:var(--accent-hover)}
+  .toggle:hover{background:var(--hover);color:var(--text-2)}
+  .select-btn:hover{border-color:var(--line-strong);background:var(--sunken)}
+  .memo:hover:not(:focus){border-color:var(--line-strong)}
+  .btn-danger:hover{background:var(--danger-soft)}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- サイドバー -->
+  <nav class="sidebar" aria-label="メインメニュー">
+    <div class="brand-row">
+      <div class="logo-sm">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>
+      </div>
+      <span class="brand-name">シンプルTodo</span>
+    </div>
+    <a class="nav-item" href="#" aria-current="page">
+      <svg class="ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <span>今日</span><span class="count">4</span>
+    </a>
+    <a class="nav-item" href="#">
+      <svg class="ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+      <span>インボックス</span><span class="count">1</span>
+    </a>
+    <div class="group-label">リスト</div>
+    <a class="nav-item" href="#">
+      <span class="list-dot" style="--c:#3B5BDB" aria-hidden="true"></span>
+      <span>仕事</span><span class="count">3</span>
+    </a>
+    <a class="nav-item" href="#">
+      <span class="list-dot" style="--c:#2B8A3E" aria-hidden="true"></span>
+      <span>買い物</span><span class="count">1</span>
+    </a>
+    <button class="nav-item is-muted" type="button">
+      <svg class="ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+      リストを追加
+    </button>
+    <div class="account">
+      <div class="avatar" aria-hidden="true">E</div>
+      <div class="who">
+        <div class="name">Erika</div>
+        <div class="mail">erika@example.com</div>
+      </div>
+      <button class="icon-btn" type="button" aria-label="アカウントメニュー">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- メイン -->
+  <main class="main">
+    <div class="main-inner">
+      <header class="page-head">
+        <div class="title-row">
+          <h1>今日</h1>
+          <span class="date num">11月17日(火)</span>
+        </div>
+        <div class="progress">
+          <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="5" aria-valuenow="1" aria-label="今日の進み具合"><i style="width:20%"></i></div>
+          <span class="label num">5件中 1件完了</span>
+        </div>
+      </header>
+
+      <!-- クイック追加 -->
+      <form class="quick">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        <label class="sr-only" for="quick-add">新しいタスク</label>
+        <input id="quick-add" placeholder="今日やることを追加" autocomplete="off">
+        <button class="chip tap" type="button">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>今日
+        </button>
+        <button class="chip tap" type="button">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 22V4M4 4h13l-2 4 2 4H4"/></svg>優先度
+        </button>
+        <button class="btn-add tap" type="submit">追加</button>
+      </form>
+
+      <!-- 絞り込み -->
+      <div class="seg tabs" role="tablist" aria-label="絞り込み">
+        <button type="button" role="tab" aria-selected="false" class="num">すべて 5</button>
+        <button type="button" role="tab" aria-selected="true" class="num">未完了 4</button>
+        <button type="button" role="tab" aria-selected="false" class="num">完了 1</button>
+      </div>
+
+      <!-- 期限切れ -->
+      <section class="section">
+        <h2 class="sec-h is-danger">期限切れ<span class="n">1</span></h2>
+        <div class="rows">
+          <div class="task is-selected">
+            <button class="check is-high" type="button" aria-label="完了にする"></button>
+            <div class="task-body">
+              <div class="task-title is-strong">請求書を送る</div>
+              <div class="meta">
+                <span class="is-overdue"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>昨日</span>
+                <span><i class="swatch" style="--c:#3B5BDB"></i>仕事</span>
+                <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>メモあり</span>
+              </div>
+            </div>
+            <svg class="flag" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round" role="img" aria-label="優先度 高"><path d="M4 22V4M4 4h13l-2 4 2 4H4"/></svg>
+          </div>
+        </div>
+      </section>
+
+      <!-- 今日 -->
+      <section class="section">
+        <h2 class="sec-h">今日<span class="n">3</span></h2>
+        <div class="rows">
+          <div class="task">
+            <button class="check" type="button" aria-label="完了にする"></button>
+            <div class="task-body">
+              <div class="task-title">定例ミーティングの議事録をまとめる</div>
+              <div class="meta"><span><i class="swatch" style="--c:#3B5BDB"></i>仕事</span></div>
+            </div>
+          </div>
+          <div class="task">
+            <button class="check" type="button" aria-label="完了にする"></button>
+            <div class="task-body">
+              <div class="task-title">牛乳と卵を買う</div>
+              <div class="meta"><span><i class="swatch" style="--c:#2B8A3E"></i>買い物</span></div>
+            </div>
+          </div>
+          <div class="task">
+            <button class="check" type="button" aria-label="完了にする"></button>
+            <div class="task-body">
+              <div class="task-title">読みたい本をメモする</div>
+              <div class="meta"><span>インボックス</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 完了(畳める) -->
+      <section class="section">
+        <button class="toggle num" type="button" aria-expanded="true">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>完了 1
+        </button>
+        <div class="rows">
+          <div class="task is-done">
+            <button class="check is-done" type="button" aria-label="未完了に戻す">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>
+            </button>
+            <div class="task-body">
+              <div class="task-title">会議室を予約する</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- 詳細パネル -->
+  <aside class="panel" aria-label="タスク詳細">
+    <div class="panel-head">
+      <span class="crumb"><i class="swatch" style="--c:#3B5BDB"></i>仕事</span>
+      <button class="icon-btn tap" type="button" aria-label="閉じる">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="panel-body">
+      <div class="title-wrap">
+        <button class="check is-high" type="button" aria-label="完了にする"></button>
+        <h2>請求書を送る</h2>
+      </div>
+
+      <dl class="props">
+        <dt>期限</dt>
+        <dd>
+          <span class="due num">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>11/16(月)・期限切れ
+          </span>
+        </dd>
+        <dt>優先度</dt>
+        <dd class="seg prio">
+          <button type="button" aria-pressed="true" class="is-high">高</button>
+          <button type="button" aria-pressed="false">中</button>
+          <button type="button" aria-pressed="false">低</button>
+        </dd>
+        <dt>リスト</dt>
+        <dd>
+          <button class="select-btn tap" type="button">
+            <i class="swatch" style="--c:#3B5BDB"></i>仕事
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+        </dd>
+      </dl>
+
+      <label class="memo-label" for="memo">メモ</label>
+      <textarea class="memo" id="memo" rows="5" maxlength="1000">先月分。PDFにして経理へ</textarea>
+      <div class="counter num">13 / 1000</div>
+    </div>
+    <div class="panel-foot">
+      <span class="saved num"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>保存しました・11/15 作成</span>
+      <button class="btn-danger tap" type="button">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>削除
+      </button>
+    </div>
+  </aside>
+</div>
+</body>
+</html>

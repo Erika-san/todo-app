@@ -1,0 +1,27 @@
+/* ログイン・新規登録 */
+.auth{min-height:calc(100vh - 48px);min-height:calc(100dvh - 48px);background:var(--auth-bg);display:flex;align-items:center;justify-content:center;padding:40px 20px}
+.auth-inner{width:100%;max-width:400px}
+.brand{display:flex;flex-direction:column;align-items:center;text-align:center;margin-bottom:28px}
+.logo{width:44px;height:44px;border-radius:var(--r-xl);background:var(--logo-bg);color:var(--logo-fg);border:var(--logo-border);display:flex;align-items:center;justify-content:center;margin-bottom:16px;box-shadow:var(--shadow-logo-lg)}
+.logo .ico{--s:24px;-webkit-mask-size:var(--logo-lg-fit);mask-size:var(--logo-lg-fit)}
+.brand h1{font-size:var(--fs-h1-auth);line-height:1.35}
+.brand p{margin:6px 0 0;color:var(--text-3)}
+.card{background:var(--surface);border:var(--card-border);border-radius:var(--r-3xl);padding:28px;display:flex;flex-direction:column;gap:20px;box-shadow:var(--card-shadow);animation:var(--anim-card)}
+.field{display:flex;flex-direction:column;gap:6px}
+.field-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.label{font-family:var(--font-ui);font-size:var(--fs-ui-m);font-weight:var(--fw-ui-strong);color:var(--text)}
+.link-sm{font-size:12px;border-radius:var(--r-sm);transition:color var(--t-color)}
+.input{height:44px;width:100%;padding:0 14px;border:var(--bw) solid var(--input-border);border-radius:var(--r-lg);background:var(--input-bg);font-size:15px;outline:none;transition:border-color var(--t-color),box-shadow var(--t-color)}
+.input:focus,.input.is-focus{border-color:var(--accent);box-shadow:var(--ring)}
+.input[aria-invalid="true"]{border-color:var(--danger);box-shadow:var(--invalid-inset)}
+.input[aria-invalid="true"]:focus{box-shadow:var(--invalid-inset),var(--ring-danger)}
+.msg{margin:0;font-size:12px;line-height:1.5;display:flex;align-items:center;gap:6px;color:var(--text-3)}
+.msg.is-error{color:var(--danger)}
+.msg .ico{--s:14px}
+.card .btn-primary{margin-top:4px;height:46px;width:100%;border-radius:var(--r-lg);font-size:var(--fs-btn-lg);letter-spacing:var(--ls-btn-lg)}
+.switch{text-align:center;margin:20px 0 0;color:var(--text-3);font-size:13px}
+.switch a{font-family:var(--font-ui);font-size:var(--fs-ui-m);font-weight:var(--fw-ui-strong);border-radius:var(--r-sm);transition:color var(--t-color)}
+@media (hover:hover) and (pointer:fine){
+  .link-sm:hover,.switch a:hover{color:var(--link-hover);text-decoration:underline;text-decoration-thickness:var(--divider-h);text-underline-offset:3px}
+  .input:hover:not(:focus):not(.is-focus):not([aria-invalid="true"]){border-color:var(--line-hover)}
+}

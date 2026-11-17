@@ -1,0 +1,15 @@
+/* トークンの色(アクセント・面)とフォントが効いているか確かめるための最小の見た目 */
+.page {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--auth-bg);
+}
+
+.title {
+  font-size: var(--fs-h1);
+  line-height: var(--lh-heading);
+  color: var(--accent);
+}

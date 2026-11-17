@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ja" data-theme="blue">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>タスク一覧(スマホ)</title>
+<script>(function(){var t;try{t=new URLSearchParams(location.search).get('theme')||localStorage.getItem('todo-theme')}catch(e){}document.documentElement.setAttribute('data-theme',t==='pixel'?'pixel':'blue')})()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;family=DotGothic16&amp;family=Press+Start+2P&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="theme/tokens.css">
+<link rel="stylesheet" href="theme/icons.css">
+<link rel="stylesheet" href="theme/base.css">
+<link rel="stylesheet" href="theme/app.css">
+<script src="theme/theme.js" defer></script>
+<style>
+.theme-bar{width:390px}
+.phone{width:390px;height:844px;position:relative;overflow:hidden;background:var(--page)}
+.top{display:flex;align-items:center;justify-content:space-between;padding:12px 12px 0}
+.top .icon-btn{width:44px;height:44px;border-radius:var(--r-lg);color:var(--text)}
+.top .icon-btn .ico{--s:22px}
+.top .avatar{width:32px;height:32px;margin-right:6px}
+.head{padding:4px 20px 0}
+.title-row{display:flex;align-items:baseline;gap:10px}
+.head h1{font-size:var(--fs-h1);line-height:var(--lh-heading)}
+.date{font-family:var(--font-ui);font-size:var(--fs-ui-m);color:var(--text-3);font-weight:var(--fw-ui-medium)}
+.progress{display:flex;align-items:center;gap:10px;margin-top:12px}
+.progress .label{font-family:var(--font-ui);font-size:var(--fs-ui-s);color:var(--text-3);white-space:nowrap}
+.tabs{margin-top:16px;box-shadow:var(--shadow-float)}
+.tabs>button{flex:1;height:36px}
+.list{margin:var(--list-frame-margin);padding:var(--list-frame-pad);background:var(--list-frame-bg);border:var(--list-frame-border);box-shadow:var(--shadow-float)}
+.list .sec-h{margin:20px 8px 2px}
+.list .sec-h:first-child{margin-top:16px}
+.task{--task-inset:calc(var(--task-pad-l-sp) + 36px);padding:12px 8px 12px var(--task-pad-l-sp);border-radius:var(--r-xl)}
+.task::after{right:8px}
+.task .check{width:24px;height:24px}
+.task:active{background:var(--row-press)}
+
+/* 下部固定の追加バー */
+.dock{position:absolute;left:12px;right:12px;bottom:24px;z-index:1;display:flex;align-items:center;gap:8px;padding:6px 6px 6px 16px;background:var(--dock-bg);border:var(--dock-border);border-radius:var(--r-2xl);box-shadow:var(--dock-shadow);transition:border-color var(--t-color),box-shadow var(--t-color)}
+.phone::after{content:"";position:absolute;left:0;right:0;bottom:0;height:128px;background:var(--dock-fade);pointer-events:none}
+.dock:focus-within{border-color:var(--accent);box-shadow:var(--ring),var(--dock-shadow)}
+.dock input{flex:1;min-width:0;border:0;outline:none;padding:10px 0;font-size:16px;background:transparent}
+.dock .btn{width:44px;height:44px;border-radius:var(--r-lg)}
+.dock .btn .ico{--s:20px}
+</style>
+</head>
+<body>
+<div class="theme-bar">
+  <span class="ui-label" id="theme-label">テーマ</span>
+  <div class="seg theme-switch" role="group" aria-labelledby="theme-label">
+    <button type="button" data-theme-set="blue" aria-pressed="true">ブルー</button>
+    <button type="button" data-theme-set="pixel" aria-pressed="false">ピクセル</button>
+  </div>
+</div>
+<div class="phone">
+  <header class="top">
+    <a class="icon-btn tap" href="sp-menu.html" aria-label="メニューを開く"><i class="ico i-menu" aria-hidden="true"></i></a>
+    <div class="avatar" aria-hidden="true">E</div>
+  </header>
+
+  <div class="head">
+    <div class="title-row">
+      <h1>今日</h1>
+      <span class="date"><span class="n">11</span>月<span class="n">17</span>日(火)</span>
+    </div>
+    <div class="progress">
+      <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="5" aria-valuenow="1" aria-label="今日の進み具合"><i style="width:20%"></i></div>
+      <span class="label"><span class="n">5</span>件中 <span class="n">1</span>件完了</span>
+    </div>
+    <div class="seg tabs" role="tablist" aria-label="絞り込み">
+      <button type="button" role="tab" aria-selected="false">すべて</button>
+      <button type="button" role="tab" aria-selected="true">未完了 <span class="n">4</span></button>
+      <button type="button" role="tab" aria-selected="false">完了</button>
+    </div>
+  </div>
+
+  <div class="list">
+    <h2 class="sec-h is-danger">期限切れ<span class="n">1</span></h2>
+    <a class="task" href="sp-detail.html">
+      <span class="check is-high" aria-hidden="true"></span>
+      <div class="task-body">
+        <div class="task-title is-strong">請求書を送る</div>
+        <div class="meta">
+          <span class="is-overdue">昨日</span>
+          <span><i class="swatch c-work"></i>仕事</span>
+          <span>メモあり</span>
+        </div>
+      </div>
+      <i class="ico i-flagfill flag" style="--s:16px" role="img" aria-label="優先度 高"></i>
+    </a>
+
+    <h2 class="sec-h">今日<span class="n">3</span></h2>
+    <div class="task">
+      <button class="check" type="button" aria-label="完了にする"></button>
+      <div class="task-body">
+        <div class="task-title">定例ミーティングの議事録をまとめる</div>
+        <div class="meta"><span><i class="swatch c-work"></i>仕事</span></div>
+      </div>
+    </div>
+    <div class="task">
+      <button class="check" type="button" aria-label="完了にする"></button>
+      <div class="task-body">
+        <div class="task-title">牛乳と卵を買う</div>
+        <div class="meta"><span><i class="swatch c-shop"></i>買い物</span></div>
+      </div>
+    </div>
+    <div class="task">
+      <button class="check" type="button" aria-label="完了にする"></button>
+      <div class="task-body">
+        <div class="task-title">読みたい本をメモする</div>
+        <div class="meta"><span>インボックス</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 下部固定の追加バー -->
+  <form class="dock">
+    <label class="sr-only" for="m-add">新しいタスク</label>
+    <input id="m-add" placeholder="今日やることを追加" autocomplete="off" enterkeyhint="done">
+    <button class="btn btn-primary tap" type="submit" aria-label="追加"><i class="ico i-plus" aria-hidden="true"></i></button>
+  </form>
+</div>
+</body>
+</html>

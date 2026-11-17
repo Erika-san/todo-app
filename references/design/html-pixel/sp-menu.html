@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>サイドメニュー(スマホ)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DotGothic16&amp;family=Press+Start+2P&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<style>
+/* パレットは8色のみ。濃淡や透明度での派生色も作らない */
+:root{
+  --ink:#0E1030;    /* ウィンドウ地・影 */
+  --win:#23307A;    /* 画面地・入力欄・選択行 */
+  --cream:#F4EFD8;  /* 本文・枠線 */
+  --dim:#A9B2E8;    /* 補足文字 */
+  --gold:#FFD447;   /* カーソル・主ボタン・選択 */
+  --red:#FF8A7A;    /* 期限切れ・削除・エラー */
+  --orange:#FFAE57; /* 優先度 高・ボタンの段差 */
+  --green:#7EE08F;  /* 完了・保存・HPバー */
+  --f-pixel:"DotGothic16","Noto Sans JP",sans-serif;
+  --f-num:"Press Start 2P","DotGothic16",monospace;
+  --f-body:"Noto Sans JP",system-ui,sans-serif;
+  --shadow:4px 4px 0 0 var(--ink);
+}
+*,*::before,*::after{box-sizing:border-box;border-radius:0}
+html{-webkit-text-size-adjust:100%;color:var(--cream);background:var(--win)}
+body{margin:0;background:var(--win);color:var(--cream);font-family:var(--f-body);font-size:14px;line-height:1.6;font-weight:400}
+::selection{background:var(--gold);color:var(--ink)}
+h1,h2{margin:0;font-family:var(--f-pixel);font-weight:400;letter-spacing:.02em}
+a{color:var(--gold);text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;margin:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+a{-webkit-tap-highlight-color:transparent}
+input,textarea{font:inherit;color:inherit;caret-color:var(--gold)}
+::placeholder{color:var(--dim);opacity:1}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.px{font-family:var(--f-pixel);font-weight:400;-webkit-font-smoothing:none}
+.n{font-family:var(--f-num);font-size:12px;line-height:1;-webkit-font-smoothing:none}
+.pxi{display:block;flex-shrink:0}
+.window{background:var(--ink);border:2px solid var(--cream);box-shadow:var(--shadow)}
+.swatch{display:inline-block;width:8px;height:8px;flex-shrink:0;background:var(--c)}
+
+/* ボタン: 押すと2pxずれて段差が反転する(カクッと2コマ) */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--f-pixel);font-size:16px;line-height:1;border:2px solid var(--cream);transition:transform 80ms steps(2)}
+.btn:active{transform:translate(2px,2px)}
+.btn-gold{background:var(--gold);color:var(--ink);box-shadow:inset -4px -4px 0 0 var(--orange)}
+.btn-gold:active{box-shadow:inset 4px 4px 0 0 var(--orange)}
+.btn-sub{background:var(--ink);color:var(--cream);border-color:var(--dim);box-shadow:inset -2px -2px 0 0 var(--win)}
+.btn-danger{background:var(--ink);color:var(--red);border-color:var(--red)}
+.icon-btn{display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--cream);border:2px solid transparent;transition:transform 80ms steps(2)}
+.icon-btn:active{transform:translate(2px,2px)}
+
+/* RPGのカーソル(▶)。1秒周期で2px揺れる */
+.cursor::before{content:"";position:absolute;left:6px;top:50%;width:8px;height:14px;margin-top:-7px;background:var(--gold);-webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%204%207'%20shape-rendering%3D'crispEdges'%3E%3Cpath%20d%3D'M0%200h1v1h-1zM0%201h2v1h-2zM0%202h3v1h-3zM0%203h4v1h-4zM0%204h3v1h-3zM0%205h2v1h-2zM0%206h1v1h-1z'%2F%3E%3C%2Fsvg%3E") center/8px 14px no-repeat;mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%204%207'%20shape-rendering%3D'crispEdges'%3E%3Cpath%20d%3D'M0%200h1v1h-1zM0%201h2v1h-2zM0%202h3v1h-3zM0%203h4v1h-4zM0%204h3v1h-3zM0%205h2v1h-2zM0%206h1v1h-1z'%2F%3E%3C%2Fsvg%3E") center/8px 14px no-repeat;animation:bob 1s steps(1) infinite}
+@keyframes bob{50%{transform:translateX(2px)}}
+
+@media (hover:hover) and (pointer:fine){
+  .btn-gold:hover{background:var(--cream)}
+  .btn-sub:hover{background:var(--win);border-color:var(--cream)}
+  .btn-danger:hover{background:var(--red);color:var(--ink)}
+  .icon-btn:hover{border-color:var(--cream);background:var(--win)}
+}
+@media (prefers-reduced-motion:reduce){
+  .btn:active,.icon-btn:active{transform:none}
+  .cursor::before{animation:none}
+}
+/* ナビ項目(サイドバー/ドロワー共通) */
+.nav-item{position:relative;display:flex;align-items:center;gap:10px;height:40px;padding:0 10px 0 22px;border:2px solid transparent;font-family:var(--f-pixel);font-size:16px;line-height:1;color:var(--cream);text-align:left}
+.nav-item .ico{color:var(--dim)}
+.nav-item .count{margin-left:auto;font-family:var(--f-num);font-size:12px;color:var(--dim)}
+.nav-item .list-dot{width:10px;height:10px;margin:0 4px;flex-shrink:0;background:var(--c)}
+.nav-item.is-muted{color:var(--dim)}
+.nav-item[aria-current="page"]{background:var(--win);border-color:var(--gold)}
+.nav-item[aria-current="page"] .ico,.nav-item[aria-current="page"] .count{color:var(--gold)}
+.nav-item:not([aria-current="page"]):active{background:var(--win)}
+.group-label{font-family:var(--f-pixel);font-size:14px;color:var(--dim);padding:22px 10px 8px 22px;display:flex;align-items:center;gap:8px}
+.group-label::after{content:"";flex:1;height:2px;background:repeating-linear-gradient(90deg,var(--dim) 0 2px,transparent 2px 6px)}
+.logo-sm{width:30px;height:30px;background:var(--gold);color:var(--ink);border:2px solid var(--cream);box-shadow:inset -2px -2px 0 0 var(--orange);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.brand-name{font-family:var(--f-pixel);font-size:18px;line-height:1}
+.avatar{background:var(--gold);color:var(--ink);border:2px solid var(--cream);display:flex;align-items:center;justify-content:center;font-family:var(--f-num);font-size:12px;line-height:1;flex-shrink:0}
+
+/* 完了チェック(四角) */
+.check{position:relative;width:20px;height:20px;border:2px solid var(--dim);background:var(--ink);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:transparent}
+.check::before{content:"";position:absolute;inset:-10px}
+.check::after{content:"";width:14px;height:12px;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%207%206'%20shape-rendering%3D'crispEdges'%3E%3Cpath%20d%3D'M6%200h1v1h-1zM5%201h2v1h-2zM0%202h1v1h-1zM4%202h2v1h-2zM0%203h2v1h-2zM3%203h2v1h-2zM1%204h3v1h-3zM2%205h1v1h-1z'%2F%3E%3C%2Fsvg%3E") center/14px 12px no-repeat;mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%207%206'%20shape-rendering%3D'crispEdges'%3E%3Cpath%20d%3D'M6%200h1v1h-1zM5%201h2v1h-2zM0%202h1v1h-1zM4%202h2v1h-2zM0%203h2v1h-2zM3%203h2v1h-2zM1%204h3v1h-3zM2%205h1v1h-1z'%2F%3E%3C%2Fsvg%3E") center/14px 12px no-repeat}
+.check.is-high{border-color:var(--orange)}
+.check.is-done{background:var(--gold);border-color:var(--gold);color:var(--ink)}
+button.check{transition:transform 80ms steps(2)}
+button.check:active{transform:translate(2px,2px)}
+
+/* セグメント(絞り込み・優先度) */
+.seg{display:flex;border:2px solid var(--cream);background:var(--ink)}
+.seg>button{font-family:var(--f-pixel);font-size:16px;line-height:1;color:var(--cream);white-space:nowrap;display:flex;align-items:center;justify-content:center;gap:8px}
+.seg>button+button{border-left:2px solid var(--win)}
+.seg>button[aria-selected="true"],.seg>button[aria-pressed="true"]{background:var(--gold);color:var(--ink)}
+.seg>button.is-high[aria-pressed="true"]{background:var(--orange)}
+
+/* タスク行 */
+.task{position:relative;display:flex;align-items:center;gap:12px;padding:10px 12px 10px 26px;border:2px solid transparent;color:var(--cream)}
+.task::after{content:"";position:absolute;left:58px;right:12px;bottom:-2px;height:2px;background:repeating-linear-gradient(90deg,var(--win) 0 4px,transparent 4px 8px)}
+.task:last-child::after,.task.is-selected::after,.task:has(+ .task.is-selected)::after{display:none}
+.task.is-selected{background:var(--win);border-color:var(--gold)}
+.task-body{flex:1;min-width:0}
+.task-title{font-size:15px;line-height:1.5}
+.task-title.is-strong{font-weight:500}
+.task.is-done .task-title{color:var(--dim);text-decoration:line-through;text-decoration-thickness:2px}
+.meta{display:flex;flex-wrap:wrap;gap:2px 14px;margin-top:4px;font-size:12px;line-height:1.5;color:var(--dim)}
+.meta>span{display:inline-flex;align-items:center;gap:6px}
+.meta .is-overdue{color:var(--red);font-family:var(--f-pixel);font-size:14px;line-height:1}
+.flag{color:var(--orange)}
+.sec-h{margin:0 0 6px;font-size:16px;line-height:1.2;color:var(--cream);display:flex;align-items:center;gap:10px}
+.sec-h .n{color:var(--dim)}
+.sec-h.is-danger,.sec-h.is-danger .n{color:var(--red)}
+
+/* HPバー風の進捗 */
+.bar{flex:1;height:16px;border:2px solid var(--cream);background:var(--ink);padding:2px}
+.bar>i{display:block;height:100%;background:repeating-linear-gradient(90deg,var(--green) 0 6px,transparent 6px 8px)}
+
+@media (hover:hover) and (pointer:fine){
+  .nav-item:not([aria-current="page"]):hover{background:var(--win)}
+  .check:hover{border-color:var(--cream);color:var(--dim)}
+  .check.is-high:hover{border-color:var(--orange);color:var(--orange)}
+  .check.is-done:hover{background:var(--cream);border-color:var(--cream);color:var(--ink)}
+  .seg>button:not([aria-selected="true"]):not([aria-pressed="true"]):hover{background:var(--win)}
+  .task:not(.is-selected):hover{background:var(--win)}
+  .task:hover::after,.task:has(+ .task:hover)::after{display:none}
+}
+@media (prefers-reduced-motion:reduce){button.check:active{transform:none}}
+.phone{width:390px;height:844px;position:relative;overflow:hidden;background:var(--win)}
+/* 背景を暗くするのは半透明ではなく、2pxの市松模様(ディザ) */
+.phone::before{content:"";position:absolute;inset:0;background-image:conic-gradient(var(--ink) 25%,transparent 0 50%,var(--ink) 0 75%,transparent 0);background-size:4px 4px;animation:dither-in 240ms steps(3) both}
+@keyframes dither-in{from{opacity:0}}
+/* ドロワーは6コマでカクカク滑り込む */
+.drawer{position:absolute;top:0;bottom:0;left:0;width:300px;border-left:0;border-top:0;border-bottom:0;padding:16px 10px 28px;display:flex;flex-direction:column;gap:4px;animation:drawer-in 300ms steps(6) both}
+@keyframes drawer-in{from{transform:translateX(-100%)}}
+.brand-row{display:flex;align-items:center;justify-content:space-between;padding:0 0 14px 8px}
+.brand-row>div{display:flex;align-items:center;gap:10px}
+.brand-row .icon-btn{width:44px;height:44px}
+.drawer .nav-item{height:48px;gap:12px;padding-right:12px}
+.drawer .nav-item .list-dot{width:12px;height:12px}
+.account{margin-top:auto;display:flex;align-items:center;gap:10px;padding:14px 2px 0 8px;border-top:2px solid var(--win)}
+.account .avatar{width:36px;height:36px}
+.account .who{flex:1;min-width:0}
+.account .name{font-family:var(--f-num);font-size:12px;line-height:1.6}
+.account .mail{font-size:12px;color:var(--dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.logout{height:44px;padding:0 12px;font-size:14px;flex-shrink:0}
+@media (prefers-reduced-motion:reduce){.drawer{animation:none}}
+</style>
+</head>
+<body>
+<div class="phone">
+  <nav class="drawer window" aria-label="メインメニュー">
+    <div class="brand-row">
+      <div>
+        <div class="logo-sm"><svg class="pxi" width="18" height="14" viewBox="0 0 9 7" fill="currentColor" shape-rendering="crispEdges" aria-hidden="true"><path d="M8 0h1v1h-1zM7 1h2v1h-2zM6 2h2v1h-2zM0 3h1v1h-1zM5 3h2v1h-2zM0 4h2v1h-2zM4 4h2v1h-2zM1 5h4v1h-4zM2 6h2v1h-2z"/></svg></div>
+        <span class="brand-name">シンプルTodo</span>
+      </div>
+      <a class="icon-btn" href="sp-list.html" aria-label="メニューを閉じる"><svg class="pxi" width="14" height="14" viewBox="0 0 7 7" fill="currentColor" shape-rendering="crispEdges" aria-hidden="true"><path d="M0 0h1v1h-1zM6 0h1v1h-1zM0 1h2v1h-2zM5 1h2v1h-2zM1 2h2v1h-2zM4 2h2v1h-2zM2 3h3v1h-3zM1 4h2v1h-2zM4 4h2v1h-2zM0 5h2v1h-2zM5 5h2v1h-2zM0 6h1v1h-1zM6 6h1v1h-1z"/></svg></a>
+    </div>
+    <a class="nav-item cursor" href="sp-list.html" aria-current="page">
+      <span class="ico"><svg class="pxi" width="18" height="18" viewBox="0 0 9 9" fill="currentColor" shape-rendering="crispEdges" aria-hidden="true"><path d="M4 0h1v1h-1zM1 1h1v1h-1zM7 1h1v1h-1zM3 2h3v1h-3zM2 3h5v1h-5zM0 4h1v1h-1zM2 4h5v1h-5zM8 4h1v1h-1zM2 5h5v1h-5zM3 6h3v1h-3zM1 7h1v1h-1zM7 7h1v1h-1zM4 8h1v1h-1z"/></svg></span>
+      <span>今日</span><span class="count">4</span>
+    </a>
+    <a class="nav-item" href="#">
+      <span class="ico"><svg class="pxi" width="18" height="16" viewBox="0 0 9 8" fill="currentColor" shape-rendering="crispEdges" aria-hidden="true"><path d="M1 0h7v1h-7zM1 1h1v1h-1zM7 1h1v1h-1zM0 2h1v1h-1zM8 2h1v1h-1zM0 3h1v1h-1zM8 3h1v1h-1zM0 4h3v1h-3zM6 4h3v1h-3zM0 5h1v1h-1zM3 5h3v1h-3zM8 5h1v1h-1zM0 6h1v1h-1zM8 6h1v1h-1zM0 7h9v1h-9z"/></svg></span>
+      <span>インボックス</span><span class="count">1</span>
+    </a>
+    <div class="group-label">リスト</div>
+    <a class="nav-item" href="#">
+      <span class="list-dot" style="--c:var(--dim)" aria-hidden="true"></span>
+      <span>仕事</span><span class="count">3</span>
+    </a>
+    <a class="nav-item" href="#">
+      <span class="list-dot" style="--c:var(--green)" aria-hidden="true"></span>
+      <span>買い物</span><span class="count">1</span>
+    </a>
+    <button class="nav-item is-muted" type="button">
+      <span class="ico"><svg class="pxi" width="18" height="18" viewBox="0 0 9 9" fill="currentColor" shape-rendering="crispEdges" aria-hidden="true"><path d="M4 0h1v1h-1zM4 1h1v1h-1zM4 2h1v1h-1zM4 3h1v1h-1zM0 4h9v1h-9zM4 5h1v1h-1zM4 6h1v1h-1zM4 7h1v1h-1zM4 8h1v1h-1z"/></svg></span>リストを追加
+    </button>
+    <div class="account">
+      <div class="avatar" aria-hidden="true">E</div>
+      <div class="who">
+        <div class="name">Erika</div>
+        <div class="mail">erika@example.com</div>
+      </div>
+      <a class="btn btn-sub logout" href="pc-login.html">ログアウト</a>
+    </div>
+  </nav>
+</div>
+</body>
+</html>

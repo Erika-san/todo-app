@@ -1,0 +1,68 @@
+/* 土台: リセット・文字・共通部品。値はすべて tokens.css / icons.css から */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;background:var(--page);color:var(--text)}
+body{margin:0;background:var(--page);color:var(--text);font-family:var(--font-body);font-size:14px;line-height:1.55;-webkit-font-smoothing:var(--smoothing);-moz-osx-font-smoothing:grayscale}
+::selection{background:var(--selection-bg);color:var(--selection-fg)}
+h1,h2{margin:0;font-family:var(--font-heading);font-weight:var(--fw-heading);letter-spacing:var(--ls-heading);font-feature-settings:"palt";text-wrap:balance;text-shadow:var(--heading-shadow)}
+a{color:var(--link);text-decoration:none;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;margin:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+input,textarea{font:inherit;color:inherit;caret-color:var(--accent)}
+::placeholder{color:var(--placeholder);opacity:1}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* UI文字(見出し以外のラベル類)。ピクセルテーマではドットフォントになる */
+.ui{font-family:var(--font-ui)}
+/* 数字。ブルーは等幅数字、ピクセルは Press Start 2P */
+.n{font-family:var(--font-num);font-size:var(--fs-num);font-variant-numeric:tabular-nums;-webkit-font-smoothing:var(--smoothing-num)}
+
+/* アイコン: マスクで描き、色は currentColor */
+.ico{display:block;flex-shrink:0;width:var(--s,18px);height:var(--s,18px);background:currentColor;-webkit-mask:var(--i) center/var(--icon-fit) no-repeat;mask:var(--i) center/var(--icon-fit) no-repeat}
+
+.swatch{display:inline-block;width:8px;height:8px;border-radius:var(--r-xs);flex-shrink:0;background:var(--c,var(--accent))}
+.c-work{--c:var(--list-work)}
+.c-shop{--c:var(--list-shop)}
+
+/* 押した感触(ブルー: 縮む / ピクセル: 2pxずれる) */
+.tap{transition:transform var(--t-press),background-color var(--t-color),color var(--t-color),border-color var(--t-color),box-shadow var(--t-color)}
+.tap:active{transform:var(--press-transform)}
+
+/* ボタン */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--font-ui);line-height:1;white-space:nowrap}
+.btn-primary{background:var(--accent);color:var(--on-accent);border:var(--btn-primary-border);font-weight:var(--fw-ui-strong);box-shadow:var(--shadow-primary)}
+.btn-primary:active{background:var(--accent-press);box-shadow:var(--shadow-primary-active)}
+.btn-secondary{background:var(--btn2-bg);color:var(--btn2-fg);border:var(--btn2-border);box-shadow:var(--shadow-btn2)}
+.btn-secondary .ico{color:var(--text-3)}
+.btn-danger{background:var(--btn-danger-bg);color:var(--danger);border:var(--btn-danger-border);font-weight:var(--fw-ui-medium)}
+.btn-danger:active{background:var(--danger-press);color:var(--danger-hover-fg)}
+.icon-btn{display:flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:var(--r-md);color:var(--text-3);border:var(--bw) solid transparent}
+.icon-btn:active{background:var(--press)}
+
+/* RPGのカーソル(▶)。ブルーでは content:none で出ない */
+.cursor{position:relative}
+.cursor::before{content:var(--cursor-content);position:absolute;left:6px;top:50%;width:8px;height:14px;margin-top:-7px;background:var(--accent);-webkit-mask:var(--icon-cursor) center/8px 14px no-repeat;mask:var(--icon-cursor) center/8px 14px no-repeat;animation:var(--anim-cursor)}
+
+/* セグメント(絞り込み・優先度・テーマ) */
+.seg{display:flex;gap:var(--seg-gap);padding:var(--seg-pad);background:var(--seg-bg);border:var(--seg-border);border-radius:var(--r-lg)}
+.seg>button{display:flex;align-items:center;justify-content:center;gap:6px;border-radius:var(--r-md);color:var(--seg-fg);font-family:var(--font-ui);font-size:var(--fs-ui-m);line-height:1;white-space:nowrap;transition:background-color var(--t-color),color var(--t-color),box-shadow var(--t-color)}
+.seg>button+button{border-left:var(--seg-divider)}
+.seg>button[aria-selected="true"],.seg>button[aria-pressed="true"]{background:var(--seg-on-bg);color:var(--seg-on-fg);font-weight:var(--fw-ui-strong);box-shadow:var(--seg-on-shadow)}
+.seg>button.is-high[aria-pressed="true"]{background:var(--seg-high-on-bg);color:var(--seg-high-on-fg)}
+
+/* テーマ切り替え(画面右上のプレビュー用バー) */
+.theme-bar{position:sticky;top:0;z-index:20;height:48px;display:flex;align-items:center;justify-content:flex-end;gap:10px;padding:0 12px;background:var(--chrome-bg);border-bottom:var(--chrome-border)}
+.theme-bar .ui-label{font-family:var(--font-ui);font-size:var(--fs-ui-s);color:var(--text-3)}
+.theme-switch>button{height:32px;padding:0 12px;font-size:var(--fs-ui-m)}
+
+@keyframes drawer-in{from{transform:translateX(-100%)}}
+@keyframes scrim-in{from{opacity:0}}
+@keyframes win-open{from{clip-path:inset(50% 0 50% 0)}to{clip-path:inset(0 -8px -8px 0)}}
+@keyframes bob{50%{transform:translateX(2px)}}
+
+@media (hover:hover) and (pointer:fine){
+  .seg>button:not([aria-selected="true"]):not([aria-pressed="true"]):hover{color:var(--text);background:var(--seg-hover-bg)}
+  .btn-primary:hover{background:var(--accent-hover)}
+  .btn-secondary:hover{background:var(--btn2-hover-bg);border-color:var(--btn2-border-hover);color:var(--text)}
+  .btn-danger:hover{background:var(--danger-soft);color:var(--danger-hover-fg)}
+  .icon-btn:hover{background:var(--hover);color:var(--text);border-color:var(--icon-btn-hover-border)}
+}
