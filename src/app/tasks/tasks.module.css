@@ -1,0 +1,69 @@
+/* 仮のタスク一覧。値はトークンだけを使う */
+.page {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--page);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 48px 20px;
+}
+
+.card {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 16px 16px 20px;
+  background: var(--surface);
+  border: var(--group-border);
+  border-radius: var(--r-2xl);
+}
+
+.who {
+  margin: 0;
+  color: var(--text-2);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.who strong {
+  color: var(--text);
+  font-weight: var(--fw-ui-strong);
+}
+
+.logout {
+  flex-shrink: 0;
+  height: 44px;
+  padding: 0 14px;
+  border: var(--btn2-border);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  color: var(--btn2-fg);
+  font: inherit;
+  font-family: var(--font-ui);
+  font-size: var(--fs-ui-m);
+  font-weight: var(--fw-ui-medium);
+  box-shadow: var(--shadow-logout);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform var(--t-press), background-color var(--t-color), border-color var(--t-color);
+}
+
+.logout:active {
+  transform: var(--press-transform);
+}
+
+.loading {
+  color: var(--text-3);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .logout:hover {
+    background: var(--btn2-hover-bg);
+    border-color: var(--btn2-border-hover);
+    color: var(--text);
+  }
+}

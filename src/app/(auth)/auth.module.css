@@ -1,0 +1,214 @@
+/* ログイン・新規登録の見た目。references/design/html/theme/auth.css を元に、値はトークンだけを使う */
+.auth {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--auth-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.inner {
+  width: 100%;
+  max-width: 400px;
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.logo {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-xl);
+  background: var(--logo-bg);
+  color: var(--logo-fg);
+  border: var(--logo-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-logo-lg);
+}
+
+.brand h1 {
+  font-size: var(--fs-h1-auth);
+  line-height: 1.35;
+  text-wrap: balance;
+}
+
+.brand p {
+  margin: 6px 0 0;
+  color: var(--text-3);
+}
+
+.card {
+  background: var(--surface);
+  border: var(--card-border);
+  border-radius: var(--r-3xl);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-shadow: var(--card-shadow);
+  animation: var(--anim-card);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-family: var(--font-ui);
+  font-size: var(--fs-ui-m);
+  font-weight: var(--fw-ui-strong);
+  color: var(--text);
+}
+
+.input {
+  height: 44px;
+  width: 100%;
+  padding: 0 14px;
+  border: var(--bw) solid var(--input-border);
+  border-radius: var(--r-lg);
+  background: var(--input-bg);
+  color: var(--text);
+  font: inherit;
+  font-size: 15px;
+  caret-color: var(--accent);
+  outline: none;
+  transition: border-color var(--t-color), box-shadow var(--t-color);
+}
+
+.input::placeholder {
+  color: var(--placeholder);
+  opacity: 1;
+}
+
+.input:focus {
+  border-color: var(--accent);
+  box-shadow: var(--ring);
+}
+
+.input[aria-invalid="true"] {
+  border-color: var(--danger);
+  box-shadow: var(--invalid-inset);
+}
+
+.input[aria-invalid="true"]:focus {
+  box-shadow: var(--invalid-inset), var(--ring-danger);
+}
+
+.msg {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.msg svg {
+  flex-shrink: 0;
+}
+
+.error {
+  color: var(--danger);
+}
+
+/* パスワードの長さメーター(3マス) */
+.meter {
+  display: flex;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.meter span {
+  flex: 1;
+  height: var(--meter-h);
+  border-radius: var(--r-xs);
+  background: var(--meter-off);
+  border: var(--meter-border);
+  transition: background-color var(--t-color);
+}
+
+.meter span.on {
+  background: var(--meter-on);
+  border-color: var(--meter-on);
+}
+
+.meter.done span.on {
+  background: var(--success);
+  border-color: var(--success);
+}
+
+.primary {
+  margin-top: 4px;
+  height: 46px;
+  width: 100%;
+  border: var(--btn-primary-border);
+  border-radius: var(--r-lg);
+  background: var(--accent);
+  color: var(--on-accent);
+  font: inherit;
+  font-family: var(--font-ui);
+  font-size: var(--fs-btn-lg);
+  font-weight: var(--fw-ui-strong);
+  letter-spacing: var(--ls-btn-lg);
+  box-shadow: var(--shadow-primary);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform var(--t-press), background-color var(--t-color), box-shadow var(--t-color);
+}
+
+.primary:active {
+  transform: var(--press-transform);
+  background: var(--accent-press);
+  box-shadow: var(--shadow-primary-active);
+}
+
+.primary:disabled {
+  cursor: progress;
+  opacity: 0.7;
+}
+
+.switch {
+  text-align: center;
+  margin: 20px 0 0;
+  color: var(--text-3);
+  font-size: 13px;
+}
+
+.switch a {
+  font-family: var(--font-ui);
+  font-size: var(--fs-ui-m);
+  font-weight: var(--fw-ui-strong);
+  border-radius: var(--r-sm);
+  transition: color var(--t-color);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .primary:not(:disabled):hover {
+    background: var(--accent-hover);
+  }
+
+  .switch a:hover {
+    color: var(--link-hover);
+    text-decoration: underline;
+    text-decoration-thickness: var(--divider-h);
+    text-underline-offset: 3px;
+  }
+
+  .input:hover:not(:focus):not([aria-invalid="true"]) {
+    border-color: var(--line-hover);
+  }
+}

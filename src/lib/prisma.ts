@@ -1,4 +1,4 @@
-// アプリから DB を使うときの入り口。サーバー側(Route Handler など)だけで import する
+// アプリから DB を使うときの入り口。サーバー側(Route Handler / Server Action / Server Component)だけで使う
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@/generated/prisma/client";
 
@@ -12,14 +12,15 @@ function createPrismaClient() {
   return new PrismaClient({ adapter });
 }
 
-// 開発中はファイルを保存するたびにコードが読み直される。そのたびに新しい接続を作ると
-// 接続が増え続けるので、作ったものを globalThis に置いて使い回す(本番では1回しか読まれない)
-const globalForPrisma = globalThis as unknown as {
-  prisma: ReturnType<typeof createPrismaClient> | undefined;
-};
+type PrismaClientInstance = ReturnType<typeof createPrismaClient>;
 
-export const prisma = globalForPrisma.prisma ?? createPrismaClient();
+// 1つだけ作って使い回す。開発中はファイルを保存するたびにコードが読み直されるので、
+// globalThis に置いて、読み直しのたびに接続が増え続けないようにする
+const globalForPrisma = globalThis as unknown as { prisma?: PrismaClientInstance };
 
-if (process.env.NODE_ENV !== "production") {
-  globalForPrisma.prisma = prisma;
+// 初めて使うときに作る(ファイルを読み込んだ時点では作らない)。
+// Next.js の事前レンダリング中に Prisma の初期化処理(現在時刻の取得など)が走るのを避けるため
+export function getPrisma(): PrismaClientInstance {
+  globalForPrisma.prisma ??= createPrismaClient();
+  return globalForPrisma.prisma;
 }
