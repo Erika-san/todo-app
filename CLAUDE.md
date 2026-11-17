@@ -25,6 +25,27 @@
 6. リストと「今日」ビュー、絞り込み
 7. 仕上げ(空の表示、エラー表示、スマホ表示の確認)
 
+## DB の変更(マイグレーション)の手順
+テーブルを足す・列を変えるときは、必ずこの手順で行う。接続先は `prisma.config.ts` の DIRECT_URL(Session pooler, 5432)。
+
+1. `prisma/schema.prisma` を書き換える。
+2. 前回コミットした schema と今の schema を比べて、差分の SQL をファイルに書き出す(DB には触らない)。
+   ```
+   git show HEAD:prisma/schema.prisma > prisma/.prev-schema.prisma
+   mkdir prisma/migrations/<YYYYMMDDHHMMSS>_<内容がわかる名前>
+   npx prisma migrate diff --from-schema prisma/.prev-schema.prisma --to-schema prisma/schema.prisma --script > prisma/migrations/<同じフォルダ名>/migration.sql
+   rm prisma/.prev-schema.prisma
+   ```
+3. できた `migration.sql` を読んで中身を確かめる。テーブルを新しく作ったときは、RLS の有効化とポリシーも同じファイルに手で書き足す(Supabase 固有の設定は schema.prisma に書けないため)。
+4. `npx prisma migrate deploy` で Supabase に反映する(まだ反映していないマイグレーションを順番に流す)。
+5. `npx prisma migrate status` で「Database schema is up to date!」を確認し、`npx prisma generate` でコード側の型を作り直す。
+6. `schema.prisma` と `migration.sql` を同じコミットに入れる(次回の手順2は、このコミットの schema を比べる元にするため)。
+
+使わないコマンドと理由:
+- `prisma migrate dev`: 一時的な空のDB(シャドウDB)で試すが、そこには Supabase の `auth` スキーマが無く、トリガーや `auth.users` への外部キーで失敗する。
+- `prisma migrate diff --from-config-datasource`(DB と比べる): `users` が `auth.users` を参照しているため、Prisma が「別スキーマへの参照」としてエラー(P4002)を出す。
+- `prisma db push` / `prisma migrate reset`: 履歴が残らない/DB の中身を全部消すため。
+
 ## 守ること
 - **データの持ち主チェック**: Prisma はDBに管理者権限で接続するため、Supabase の RLS が効かない。API では必ずログイン中のユーザーの user_id で絞り込み、他人のデータは 404 を返す。RLS は予備の守りとして設定しておく。
 - **秘密の値**: `.env.local` に書き、Git に入れない(`.gitignore` を確認)。service_role キーは画面側のコードで絶対に使わない。秘密の値をチャットや報告に書かない。

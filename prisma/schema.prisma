@@ -1,0 +1,82 @@
+// DB の設計図。仕様書 第6章(ERD・データ設計)・第8章(業務ルール)に合わせる
+// DB の列名は snake_case(@map)、コード側の名前は camelCase
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  // 接続先は prisma.config.ts に書く(Prisma 7 の書き方)
+}
+
+// タスクの状態: 未完了 / 完了
+enum TaskStatus {
+  todo
+  done
+
+  @@map("task_status")
+}
+
+// 優先度: 高 / 中 / 低
+enum TaskPriority {
+  high
+  medium
+  low
+
+  @@map("task_priority")
+}
+
+// ログインする人。id は Supabase Auth が発行するユーザーIDをそのまま使う(パスワードは持たない)
+model User {
+  id        String   @id @db.Uuid
+  email     String   @unique
+  name      String   @db.VarChar(50)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  lists List[]
+  tasks Task[]
+
+  @@map("users")
+}
+
+// タスクを入れるフォルダ。同じユーザー内で同名は不可
+model List {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  name      String   @db.VarChar(30)
+  color     String?  @db.VarChar(7)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tasks Task[]
+
+  @@unique([userId, name])
+  @@map("lists")
+}
+
+// やること1件。listId が空 = インボックス
+model Task {
+  id          String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId      String       @map("user_id") @db.Uuid
+  listId      String?      @map("list_id") @db.Uuid
+  title       String       @db.VarChar(100)
+  description String?      @db.VarChar(1000)
+  dueDate     DateTime?    @map("due_date") @db.Date
+  priority    TaskPriority @default(medium)
+  status      TaskStatus   @default(todo)
+  completedAt DateTime?    @map("completed_at") @db.Timestamptz(6)
+  createdAt   DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime     @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // リストを消したらタスクは残し、list_id を空(インボックス)に戻す
+  list List? @relation(fields: [listId], references: [id], onDelete: SetNull)
+
+  // 一覧と「今日」ビューはこの3つで絞って並べる
+  @@index([userId, status, dueDate])
+  @@map("tasks")
+}

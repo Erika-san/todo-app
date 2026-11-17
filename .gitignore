@@ -39,6 +39,11 @@ yarn-error.log*
 # vercel
 .vercel
 
+# Prisma Client の生成物(npx prisma generate でいつでも作り直せる)
+/src/generated/
+# マイグレーション手順2で一時的に作る比較用ファイル
+/prisma/.prev-schema.prisma
+
 # ブラウザ確認ツール(Playwright)が出すログ
 .playwright-mcp/
 
