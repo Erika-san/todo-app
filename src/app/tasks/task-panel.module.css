@@ -1,0 +1,648 @@
+/* 詳細パネル(S-04)。references/design/html/pc-main.html の右側と sp-detail.html を元に、値はトークンだけを使う。
+   PC は一覧の右に並ぶパネル、768px 未満は全画面 */
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.panel {
+  flex: 0 0 380px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: var(--pane-border);
+  border-left: var(--pane-divider);
+  box-shadow: var(--pane-shadow);
+  /* 一覧が長くてもパネルは画面の高さに収め、中だけスクロールする */
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  height: 100vh;
+  height: 100dvh;
+}
+
+/* ---------- 上部 ---------- */
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 14px 14px 6px 24px;
+}
+
+.back,
+.mobileStatus {
+  display: none;
+}
+
+.close {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: var(--bw) solid transparent;
+  border-radius: var(--r-md);
+  background: none;
+  color: var(--text-3);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform var(--t-press), background-color var(--t-color), color var(--t-color);
+}
+
+.close:active {
+  transform: var(--press-transform);
+  background: var(--press);
+}
+
+/* ---------- 本文 ---------- */
+.body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 24px 24px;
+}
+
+.titleWrap {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.titleField {
+  flex: 1;
+  min-width: 0;
+}
+
+.titleInput {
+  width: 100%;
+  margin: 0;
+  padding: 2px 6px;
+  margin-left: -6px;
+  border: var(--bw) solid transparent;
+  border-radius: var(--r-md);
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-family: var(--font-heading);
+  font-size: var(--fs-h2-panel);
+  font-weight: var(--fw-heading);
+  letter-spacing: var(--ls-heading);
+  line-height: 1.45;
+  caret-color: var(--accent);
+  outline: none;
+  transition: border-color var(--t-color), box-shadow var(--t-color);
+}
+
+.titleInput:focus {
+  border-color: var(--accent);
+  box-shadow: var(--ring);
+}
+
+.titleInput[aria-invalid="true"] {
+  border-color: var(--danger);
+}
+
+.titleDone {
+  color: var(--text-3);
+  text-decoration: line-through;
+  text-decoration-color: var(--check-border);
+}
+
+/* 完了チェック */
+.check {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  margin-top: 6px;
+  padding: 0;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--check-r);
+  border: var(--bw-check) solid var(--check-border);
+  background: var(--check-bg);
+  color: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color var(--t-color), background-color var(--t-color), color var(--t-color), transform var(--t-press);
+}
+
+.check::before {
+  content: "";
+  position: absolute;
+  inset: -10px;
+  border-radius: var(--r-full);
+}
+
+.check:active {
+  transform: var(--press-check);
+}
+
+.checkHigh {
+  border-color: var(--high);
+  background: var(--high-soft);
+}
+
+.checkDone {
+  background: var(--check-done-bg);
+  border-color: var(--check-done-bg);
+  color: var(--on-accent);
+}
+
+/* 期限・優先度 */
+.props {
+  margin: 24px 0 0;
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1fr);
+  row-gap: 14px;
+  align-items: start;
+}
+
+.props dt {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 34px;
+  font-family: var(--font-ui);
+  font-size: var(--fs-ui-m);
+  color: var(--text-3);
+}
+
+.props dd {
+  margin: 0;
+  min-width: 0;
+}
+
+.propIcon {
+  flex-shrink: 0;
+  color: var(--text-3);
+}
+
+.dueRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.dateInput {
+  height: 34px;
+  padding: 0 8px;
+  border: var(--bw) solid var(--line-strong);
+  border-radius: var(--r-md);
+  background: var(--input-bg);
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  outline: none;
+  transition: border-color var(--t-color), box-shadow var(--t-color);
+}
+
+.dateInput:focus {
+  border-color: var(--accent);
+  box-shadow: var(--ring);
+}
+
+.dateOverdue {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.dueText {
+  margin: 6px 0 0;
+  font-family: var(--font-ui);
+  font-size: var(--fs-ui-m);
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.dueTextOverdue {
+  color: var(--danger);
+  font-weight: var(--fw-ui-strong);
+}
+
+/* 切り替えボタン(期限のすぐ選ぶ・優先度) */
+.seg {
+  display: inline-flex;
+  gap: var(--seg-gap);
+  padding: var(--seg-pad);
+  background: var(--seg-bg);
+  border: var(--seg-border);
+  border-radius: var(--r-lg);
+}
+
+.seg > button {
+  height: 28px;
+  min-width: 44px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: var(--r-md);
+  background: none;
+  color: var(--seg-fg);
+  font: inherit;
+  font-family: var(--font-ui);
+  font-size: var(--fs-ui-m);
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color var(--t-color), color var(--t-color), box-shadow var(--t-color);
+}
+
+.seg > button + button {
+  border-left: var(--seg-divider);
+}
+
+.seg > button[aria-pressed="true"] {
+  background: var(--seg-on-bg);
+  color: var(--seg-on-fg);
+  font-weight: var(--fw-ui-strong);
+  box-shadow: var(--seg-on-shadow);
+}
+
+.seg > button:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.prio > button {
+  height: 30px;
+  padding: 0 12px;
+}
+
+.prio > .high[aria-pressed="true"] {
+  background: var(--seg-high-on-bg);
+  color: var(--seg-high-on-fg);
+}
+
+/* メモ */
+.memoLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 24px;
+  font-family: var(--font-ui);
+  font-size: var(--fs-ui-m);
+  color: var(--text-3);
+}
+
+.memo {
+  display: block;
+  margin-top: 8px;
+  width: 100%;
+  border: var(--bw) solid var(--field-border);
+  border-radius: var(--r-lg);
+  padding: 12px;
+  resize: vertical;
+  background: var(--field);
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.7;
+  caret-color: var(--accent);
+  outline: none;
+  transition: border-color var(--t-color), box-shadow var(--t-color), background-color var(--t-color);
+}
+
+.memo:focus {
+  border-color: var(--accent);
+  box-shadow: var(--ring);
+  background: var(--field-focus);
+}
+
+.memo[aria-invalid="true"] {
+  border-color: var(--danger);
+}
+
+.memoFoot {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.counter {
+  flex-shrink: 0;
+  font-size: 12px;
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.counterOver {
+  color: var(--danger);
+  font-weight: var(--fw-ui-strong);
+}
+
+.fieldError,
+.saveError {
+  margin: 6px 0 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--danger);
+}
+
+.memoFoot .fieldError {
+  margin: 0;
+}
+
+.fieldError svg,
+.saveError svg {
+  flex-shrink: 0;
+}
+
+.saveError {
+  margin-top: 16px;
+  padding: 8px 12px;
+  border-radius: var(--r-lg);
+  background: var(--danger-soft);
+}
+
+/* ---------- 下部 ---------- */
+.foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px 10px 24px;
+  border-top: var(--bw) solid var(--line);
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+.footInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-variant-numeric: tabular-nums;
+}
+
+.saved {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--success);
+}
+
+.delete {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 10px;
+  border: var(--btn-danger-border);
+  border-radius: var(--r-md);
+  background: var(--btn-danger-bg);
+  color: var(--danger);
+  font: inherit;
+  font-family: var(--font-ui);
+  font-size: var(--fs-ui-m);
+  font-weight: var(--fw-ui-medium);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform var(--t-press), background-color var(--t-color);
+}
+
+.delete:active {
+  transform: var(--press-transform);
+  background: var(--danger-press);
+}
+
+/* ---------- 削除の確認ダイアログ ---------- */
+.dialog {
+  width: min(400px, calc(100vw - 32px));
+  padding: 0;
+  border: var(--card-border);
+  border-radius: var(--r-3xl);
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--card-shadow);
+}
+
+.dialog::backdrop {
+  background: var(--scrim);
+}
+
+.dialogBox {
+  padding: 24px;
+}
+
+.dialogTitle {
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+.dialogText {
+  margin: 10px 0 0;
+  color: var(--text-2);
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.dialogActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.dialogCancel,
+.dialogDelete {
+  height: 40px;
+  padding: 0 16px;
+  border-radius: var(--r-lg);
+  font: inherit;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: var(--fw-ui-strong);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform var(--t-press), background-color var(--t-color), border-color var(--t-color);
+}
+
+.dialogCancel:active,
+.dialogDelete:active {
+  transform: var(--press-transform);
+}
+
+.dialogCancel {
+  border: var(--btn2-border);
+  background: var(--surface);
+  color: var(--btn2-fg);
+}
+
+.dialogDelete {
+  border: 0;
+  background: var(--danger);
+  color: var(--on-accent);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .close:hover {
+    background: var(--hover);
+    color: var(--text);
+  }
+
+  .titleInput:hover:not(:focus) {
+    border-color: var(--line);
+  }
+
+  .seg > button:not([aria-pressed="true"]):not(:disabled):hover {
+    color: var(--text);
+    background: var(--seg-hover-bg);
+  }
+
+  .memo:hover:not(:focus) {
+    border-color: var(--line-strong);
+  }
+
+  .delete:hover {
+    background: var(--danger-soft);
+  }
+
+  .dialogCancel:hover {
+    background: var(--btn2-hover-bg);
+    border-color: var(--btn2-border-hover);
+  }
+}
+
+/* ---------- スマホ(768px 未満): 全画面 ---------- */
+@media (max-width: 767px) {
+  .panel {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    flex: none;
+    /* 画面いっぱいに広げ、下の追加欄を隠す(dvh はスマホのアドレスバーの出入りに合わせた高さ) */
+    height: 100vh;
+    height: 100dvh;
+    border: 0;
+    box-shadow: none;
+    background: var(--page);
+  }
+
+  .head {
+    justify-content: space-between;
+    padding: 12px 12px 4px;
+  }
+
+  .close,
+  .pcStatus {
+    display: none;
+  }
+
+  .back {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    height: 44px;
+    padding: 0 10px 0 4px;
+    border: 0;
+    border-radius: var(--r-lg);
+    background: none;
+    color: var(--link);
+    font: inherit;
+    font-family: var(--font-ui);
+    font-size: var(--fs-ui-l);
+    font-weight: var(--fw-ui-medium);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform var(--t-press), background-color var(--t-color);
+  }
+
+  .back:active {
+    transform: var(--press-transform);
+    background: var(--accent-soft);
+  }
+
+  .mobileStatus {
+    display: block;
+    padding-right: 8px;
+    font-size: 12px;
+  }
+
+  .body {
+    padding: 8px 20px 24px;
+  }
+
+  .titleInput {
+    font-size: var(--fs-h1-detail);
+  }
+
+  .check {
+    width: 26px;
+    height: 26px;
+    margin-top: 5px;
+  }
+
+  /* 期限・優先度は枠で囲んだ行にする */
+  .props {
+    grid-template-columns: 84px minmax(0, 1fr);
+    row-gap: 0;
+    border: var(--group-border);
+    border-radius: var(--r-2xl);
+    background: var(--group-bg);
+    overflow: hidden;
+  }
+
+  .props dt,
+  .props dd {
+    padding: 12px 0;
+    min-height: 56px;
+  }
+
+  .props dt {
+    padding-left: 16px;
+  }
+
+  .props dd {
+    padding-right: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .props dt:not(:first-of-type),
+  .props dd:not(:first-of-type) {
+    border-top: var(--divider-h) solid var(--line-soft);
+  }
+
+  .seg > button {
+    height: 34px;
+  }
+
+  .dateInput {
+    height: 40px;
+    font-size: 16px; /* iOS で入力時に拡大されないように */
+  }
+
+  .memo {
+    border-radius: var(--r-2xl);
+    padding: 14px;
+    font-size: 16px;
+    resize: none;
+  }
+
+  .foot {
+    padding: 12px 20px 28px;
+    border-top-color: var(--line-soft);
+  }
+
+  .delete {
+    height: 44px;
+    padding: 0 16px;
+    border-radius: var(--r-lg);
+    background: var(--btn-danger-filled);
+  }
+}

@@ -1,9 +1,7 @@
-// S-03 タスク一覧(/tasks)。最初の一覧はサーバーで読み、追加・完了の切り替えは画面(TaskBoard)から API を呼ぶ
+// S-03 タスク一覧(/tasks)
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { requireUser } from "@/lib/auth";
-import { listTasks } from "@/lib/tasks";
-import { TaskBoard } from "./task-board";
+import { TasksContent } from "./tasks-content";
 import styles from "./tasks.module.css";
 
 export const metadata: Metadata = { title: "タスク | シンプルTodo" };
@@ -15,11 +13,4 @@ export default function TasksPage() {
       <TasksContent />
     </Suspense>
   );
-}
-
-async function TasksContent() {
-  // 署名を検証してログイン中のユーザーを確かめ、その人のタスクだけを読む
-  const user = await requireUser();
-  const tasks = await listTasks(user.id);
-  return <TaskBoard user={{ name: user.name, email: user.email }} initialTasks={tasks} />;
 }

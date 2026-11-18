@@ -7,6 +7,7 @@ export type TaskPriority = "high" | "medium" | "low";
 export type TaskDTO = {
   id: string;
   title: string;
+  description: string | null; // メモ
   status: TaskStatus;
   priority: TaskPriority;
   dueDate: string | null; // "2026-11-20" の形(時刻なし)

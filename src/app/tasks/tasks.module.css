@@ -357,15 +357,95 @@
   opacity: 0.6;
 }
 
-.taskBody {
+/* 行の本文(押すと詳細が開く)。::before で行全体を押せる範囲にする */
+.rowMain {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.rowMain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.rowMain:focus-visible {
+  outline: none;
+}
+
+.rowMain:focus-visible::before {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+}
+
+.rowMain:disabled {
+  cursor: progress;
 }
 
 .taskTitle {
+  display: block;
   font-size: 15px;
   line-height: 1.45;
   overflow-wrap: anywhere;
+}
+
+.isStrong {
+  font-weight: 500;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 12px;
+  margin-top: 3px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-3);
+}
+
+.meta > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.meta svg {
+  flex-shrink: 0;
+}
+
+/* 期限切れ(未完了で期限が今日より前)は赤字 */
+.meta .overdue {
+  color: var(--danger);
+  font-family: var(--font-ui);
+  font-weight: var(--fw-ui-strong);
+  gap: 4px;
+}
+
+/* 詳細を開いている行 */
+.isSelected {
+  background: var(--selected-bg);
+  box-shadow: var(--selected-ring);
+}
+
+.isSelected .meta {
+  color: var(--selected-meta);
+}
+
+.isSelected::after,
+.task:has(+ .isSelected)::after {
+  opacity: 0;
 }
 
 .isDone .taskTitle {
@@ -406,6 +486,12 @@
   border-radius: var(--r-full);
 }
 
+/* チェックと旗は、行全体を覆う「詳細を開く」範囲より上に置く */
+.check,
+.flag {
+  z-index: 1;
+}
+
 .check:active {
   transform: var(--press-check);
 }
@@ -426,7 +512,7 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .task:hover {
+  .task:not(.isSelected):hover {
     background: var(--row-hover);
   }
 
