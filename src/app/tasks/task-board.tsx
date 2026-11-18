@@ -508,7 +508,10 @@ export function TaskBoard({ user, initialTasks, initialLists }: Props) {
           </div>
 
           {waitingForToday ? null : sections.length === 0 ? (
-            <p className={styles.empty}>タスクはありません。入力欄から追加しましょう</p>
+            <p className={styles.empty}>
+              {/* 「完了」タブだけは、追加を促さずに「まだない」ことを伝える */}
+              {status === "done" ? "完了したタスクはまだありません" : "タスクはありません。入力欄から追加しましょう"}
+            </p>
           ) : (
             sections.map((section) => {
               // 「すべて」タブの「完了」は畳める
