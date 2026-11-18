@@ -1,34 +1,25 @@
-// S-03 タスク一覧(仮)。ステップ3ではログイン中の名前とログアウトだけ。本物の一覧はステップ4で作る
+// S-03 タスク一覧(/tasks)。最初の一覧はサーバーで読み、追加・完了の切り替えは画面(TaskBoard)から API を呼ぶ
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { requireUser } from "@/lib/auth";
-import { logout } from "../(auth)/actions";
+import { listTasks } from "@/lib/tasks";
+import { TaskBoard } from "./task-board";
 import styles from "./tasks.module.css";
 
 export const metadata: Metadata = { title: "タスク | シンプルTodo" };
 
 export default function TasksPage() {
   return (
-    <main className={styles.page}>
-      {/* ログイン状態の確認はリクエストごとに行うので、Suspense の中で動かす(Cache Components の決まり) */}
-      <Suspense fallback={<p className={styles.loading}>読み込み中…</p>}>
-        <CurrentUser />
-      </Suspense>
-    </main>
+    // ログイン確認とタスクの読み込みはリクエストごとに行うので Suspense の中で動かす(Cache Components の決まり)
+    <Suspense fallback={<p className={styles.loading}>読み込み中…</p>}>
+      <TasksContent />
+    </Suspense>
   );
 }
 
-async function CurrentUser() {
-  // 署名を検証してログイン中のユーザーを確かめる。未ログインなら /login へ(proxy の確認に加えた二重の守り)
+async function TasksContent() {
+  // 署名を検証してログイン中のユーザーを確かめ、その人のタスクだけを読む
   const user = await requireUser();
-  return (
-    <div className={styles.card}>
-      <p className={styles.who}>
-        ログイン中: <strong>{user.name || user.email}</strong>
-      </p>
-      <form action={logout}>
-        <button className={styles.logout} type="submit">ログアウト</button>
-      </form>
-    </div>
-  );
+  const tasks = await listTasks(user.id);
+  return <TaskBoard user={{ name: user.name, email: user.email }} initialTasks={tasks} />;
 }
