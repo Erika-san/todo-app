@@ -207,7 +207,7 @@ export function TaskBoard({ user, initialTasks }: Props) {
           )}
 
           {total === 0 ? (
-            <p className={styles.empty}>タスクはありません。上の欄から追加しましょう</p>
+            <p className={styles.empty}>タスクはありません。入力欄から追加しましょう</p>
           ) : (
             <>
               {todo.length > 0 && (
