@@ -522,6 +522,20 @@
   }
 }
 
+/* ---------- 768〜1119px: 一覧の幅が足りないので、パネルを一覧の上に重ねて右から出す ---------- */
+@media (min-width: 768px) and (max-width: 1119px) {
+  .panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 15;
+    width: 380px;
+    max-width: calc(100vw - 48px);
+    box-shadow: var(--card-shadow);
+  }
+}
+
 /* ---------- スマホ(768px 未満): 全画面 ---------- */
 @media (max-width: 767px) {
   .panel {
@@ -655,5 +669,24 @@
     padding: 0 16px;
     border-radius: var(--r-lg);
     background: var(--btn-danger-filled);
+  }
+}
+
+/* スマホでは、押せる範囲を 44px 以上にする(見た目はほぼ変えない) */
+@media (max-width: 767px) {
+  .titleInput,
+  .dateInput,
+  .select {
+    min-height: 44px;
+  }
+
+  .seg > button {
+    position: relative;
+  }
+
+  .seg > button::before {
+    content: "";
+    position: absolute;
+    inset: -5px 0;
   }
 }

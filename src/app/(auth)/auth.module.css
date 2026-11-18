@@ -176,6 +176,14 @@
   box-shadow: var(--shadow-primary-active);
 }
 
+/* ボタンの見た目のリンク(エラー画面の「タスク一覧へ」) */
+.linkButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
 .primary:disabled {
   cursor: progress;
   opacity: 0.7;
@@ -189,6 +197,10 @@
 }
 
 .switch a {
+  /* 文字のリンクでも、押せる範囲を 44px 以上にする */
+  display: inline-block;
+  padding: 14px 6px;
+  margin: -14px -6px;
   font-family: var(--font-ui);
   font-size: var(--fs-ui-m);
   font-weight: var(--fw-ui-strong);

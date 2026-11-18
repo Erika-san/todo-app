@@ -108,7 +108,7 @@ export function SignupForm() {
         </div>
         {formError && <ErrorMessage id="su-form-err">{formError}</ErrorMessage>}
         <button className={styles.primary} type="submit" disabled={pending} aria-busy={pending}>
-          登録してはじめる
+          {pending ? "登録中…" : "登録してはじめる"}
         </button>
       </form>
       <p className={styles.switch}>

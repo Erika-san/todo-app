@@ -801,3 +801,23 @@
     animation: none;
   }
 }
+
+/* スマホでは、押せる範囲を 44px 以上にする(見た目は変えず、透明な範囲を広げる) */
+@media (max-width: 767px) {
+  .tabs > button,
+  .toggle {
+    position: relative;
+  }
+
+  .tabs > button::before {
+    content: "";
+    position: absolute;
+    inset: -4px 0;
+  }
+
+  .toggle::before {
+    content: "";
+    position: absolute;
+    inset: -8px 0;
+  }
+}

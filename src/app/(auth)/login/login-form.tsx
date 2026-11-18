@@ -69,7 +69,7 @@ export function LoginForm() {
           {passwordError && <ErrorMessage id="login-pw-err">{passwordError}</ErrorMessage>}
         </div>
         <button className={styles.primary} type="submit" disabled={pending} aria-busy={pending}>
-          ログイン
+          {pending ? "ログイン中…" : "ログイン"}
         </button>
       </form>
       <p className={styles.switch}>

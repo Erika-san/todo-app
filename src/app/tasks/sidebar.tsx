@@ -5,6 +5,7 @@ import { useEffect, useId, useRef, useState, type CSSProperties, type FormEvent,
 import { LIST_COLORS, type ListDTO } from "@/lib/list-types";
 import { isDuplicateListName, listName, DUPLICATE_LIST_NAME } from "@/lib/validation/list";
 import { sameView, viewSearch, type View } from "@/lib/views";
+import { useFormStatus } from "react-dom";
 import { logout } from "../(auth)/actions";
 import { ConfirmDialog } from "./confirm-dialog";
 import { AlertIcon, CheckIcon, CloseIcon, DotsIcon, InboxIcon, PencilIcon, PlusIcon, SunIcon, TrashIcon } from "./icons";
@@ -155,9 +156,7 @@ export function Sidebar(props: Props) {
           {user.name && <div className={styles.mail}>{user.email}</div>}
         </div>
         <form action={logout}>
-          <button className={styles.logout} type="submit">
-            ログアウト
-          </button>
+          <LogoutButton />
         </form>
       </div>
 
@@ -173,6 +172,16 @@ export function Sidebar(props: Props) {
         />
       )}
     </nav>
+  );
+}
+
+// 送信中は「ログアウト中…」にして、押したことがわかるようにする
+function LogoutButton() {
+  const { pending } = useFormStatus();
+  return (
+    <button className={styles.logout} type="submit" disabled={pending} aria-busy={pending || undefined}>
+      {pending ? "ログアウト中…" : "ログアウト"}
+    </button>
   );
 }
 
@@ -269,6 +278,11 @@ function NameForm({
           aria-describedby={error ? errorId : undefined}
         />
       </div>
+      {saving && (
+        <p className={styles.nameSaving} role="status">
+          {initial ? "保存中…" : "作成中…"}
+        </p>
+      )}
       {error && (
         <p className={styles.nameError} id={errorId} role="alert">
           <AlertIcon />

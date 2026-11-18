@@ -17,6 +17,14 @@ export type FormState<T> = {
   formError?: string;
 } | null;
 
+const NETWORK_ERROR = "通信できませんでした。通信状況を確かめて、もう一度お試しください";
+const RATE_LIMIT_ERROR = "しばらく時間をおいてから、もう一度お試しください";
+
+// Supabase につながらない・止まっている(通信エラーや 500 番台)。パスワード違いと区別する
+function isServiceError(error: { name?: string; status?: number }) {
+  return error.name === "AuthRetryableFetchError" || error.status === 0 || (error.status ?? 0) >= 500;
+}
+
 function text(formData: FormData, key: string) {
   const value = formData.get(key);
   return typeof value === "string" ? value : "";
@@ -32,6 +40,8 @@ export async function login(_prev: FormState<LoginInput>, formData: FormData): P
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword(parsed.data);
   if (error) {
+    if (isServiceError(error)) return { formError: NETWORK_ERROR };
+    if (error.code === "over_request_rate_limit") return { formError: RATE_LIMIT_ERROR };
     // どちらが違うかは教えない(登録済みのメールアドレスを探られないため)
     return { formError: "メールアドレスまたはパスワードが違います" };
   }
@@ -60,8 +70,9 @@ export async function signup(_prev: FormState<SignupInput>, formData: FormData):
       return { fieldErrors: { email: "このメールアドレスはすでに登録されています" } };
     }
     if (error.code === "over_email_send_rate_limit" || error.code === "over_request_rate_limit") {
-      return { formError: "しばらく時間をおいてから、もう一度お試しください" };
+      return { formError: RATE_LIMIT_ERROR };
     }
+    if (isServiceError(error)) return { formError: NETWORK_ERROR };
     return { formError: "登録できませんでした。もう一度お試しください" };
   }
   // 確認メールが有効な設定だとここでログインされない(Supabase の Confirm email をオフにしておく)
