@@ -8,6 +8,7 @@ export function errorResponse(status: 400 | 401 | 404 | 500, message: string) {
 }
 
 export const notFound = () => errorResponse(404, "タスクが見つかりません");
+export const listNotFound = () => errorResponse(404, "リストが見つかりません");
 
 // ログイン中のユーザーを返す。未ログインなら 401 のレスポンスを返す
 export async function requireApiUser(): Promise<{ user: CurrentUser } | { response: Response }> {

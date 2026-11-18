@@ -1,0 +1,76 @@
+/* 確認ダイアログ(タスクの削除・リストの削除)。値はトークンだけを使う */
+
+.dialog {
+  width: min(400px, calc(100vw - 32px));
+  padding: 0;
+  border: var(--card-border);
+  border-radius: var(--r-3xl);
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--card-shadow);
+}
+
+.dialog::backdrop {
+  background: var(--scrim);
+}
+
+.dialogBox {
+  padding: 24px;
+}
+
+.dialogTitle {
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+.dialogText {
+  margin: 10px 0 0;
+  color: var(--text-2);
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.dialogActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.dialogCancel,
+.dialogDelete {
+  height: 40px;
+  padding: 0 16px;
+  border-radius: var(--r-lg);
+  font: inherit;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: var(--fw-ui-strong);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform var(--t-press), background-color var(--t-color), border-color var(--t-color);
+}
+
+.dialogCancel:active,
+.dialogDelete:active {
+  transform: var(--press-transform);
+}
+
+.dialogCancel {
+  border: var(--btn2-border);
+  background: var(--surface);
+  color: var(--btn2-fg);
+}
+
+.dialogDelete {
+  border: 0;
+  background: var(--danger);
+  color: var(--on-accent);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .dialogCancel:hover {
+    background: var(--btn2-hover-bg);
+    border-color: var(--btn2-border-hover);
+  }
+}

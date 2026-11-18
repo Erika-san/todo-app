@@ -1,11 +1,13 @@
 "use client";
 // S-04 詳細パネル。PC は右側、スマホ(768px 未満)は全画面。
 // タイトルとメモは入力欄から離れたら自動保存、期限・優先度・完了は押したらすぐ保存する(仕様書 第5章)
-import { useEffect, useRef, useState } from "react";
+import { useState, type CSSProperties } from "react";
 import type { TaskDTO, TaskPriority, TaskStatus } from "@/lib/task-types";
+import type { ListDTO } from "@/lib/list-types";
 import { DESCRIPTION_MAX, taskDescription, taskTitle } from "@/lib/validation/task";
 import { addDays, dueWithWeekday, isOverdue, localMonthDay } from "@/lib/dates";
-import { AlertIcon, BackIcon, CalendarIcon, CheckIcon, CloseIcon, FlagIcon, MemoIcon, TrashIcon } from "./icons";
+import { AlertIcon, BackIcon, CalendarIcon, CheckIcon, ChevronDownIcon, CloseIcon, FlagIcon, FolderIcon, MemoIcon, TrashIcon } from "./icons";
+import { ConfirmDialog } from "./confirm-dialog";
 import styles from "./task-panel.module.css";
 
 // 詳細パネルから変えられる項目
@@ -15,10 +17,13 @@ export type TaskPatch = Partial<{
   dueDate: string | null;
   priority: TaskPriority;
   status: TaskStatus;
+  listId: string | null;
 }>;
 
 type Props = {
   task: TaskDTO;
+  lists: ListDTO[];
+  backLabel: string; // スマホの「‹ 今日」など、閉じると戻る先のビューの名前
   today: string | null;
   saved: boolean;
   error: string | null;
@@ -33,7 +38,7 @@ const PRIORITIES: { value: TaskPriority; label: string }[] = [
   { value: "low", label: "低" },
 ];
 
-export function TaskPanel({ task, today, saved, error, onUpdate, onDelete, onClose }: Props) {
+export function TaskPanel({ task, lists, backLabel, today, saved, error, onUpdate, onDelete, onClose }: Props) {
   // 入力中の文字(保存するまでは画面の中だけ)。別のタスクを開くとパネルごと作り直される(key)
   const [titleDraft, setTitleDraft] = useState(task.title);
   const [titleError, setTitleError] = useState<string | null>(null);
@@ -43,6 +48,7 @@ export function TaskPanel({ task, today, saved, error, onUpdate, onDelete, onClo
 
   const isDone = task.status === "done";
   const overdue = today !== null && isOverdue(task, today);
+  const list = task.listId ? lists.find((l) => l.id === task.listId) : undefined;
 
   function saveTitle() {
     const parsed = taskTitle.safeParse(titleDraft);
@@ -81,11 +87,15 @@ export function TaskPanel({ task, today, saved, error, onUpdate, onDelete, onClo
 
   return (
     <aside className={styles.panel} aria-label="タスク詳細">
-      {/* 上部: PC は ×、スマホは「‹ タスク」で閉じる */}
+      {/* 上部: PC は入っているリストの名前と ×、スマホは「‹ 今日」などで閉じる */}
       <div className={styles.head}>
+        <span className={styles.crumb}>
+          {list ? <i className={styles.swatch} style={{ "--c": list.color } as CSSProperties} /> : null}
+          {list?.name ?? "インボックス"}
+        </span>
         <button type="button" className={styles.back} onClick={onClose}>
           <BackIcon />
-          タスク
+          {backLabel}
         </button>
         <span className={styles.mobileStatus}>{status}</span>
         <button type="button" className={styles.close} aria-label="閉じる" onClick={onClose}>
@@ -188,6 +198,33 @@ export function TaskPanel({ task, today, saved, error, onUpdate, onDelete, onClo
               ))}
             </div>
           </dd>
+
+          {/* リスト(インボックスか、どれか1つのリスト) */}
+          <dt>
+            <FolderIcon size={18} className={styles.propIcon} />
+            <label htmlFor="detail-list">リスト</label>
+          </dt>
+          <dd>
+            <div className={styles.selectWrap}>
+              {list ? (
+                <i className={styles.swatch} style={{ "--c": list.color } as CSSProperties} aria-hidden="true" />
+              ) : null}
+              <select
+                id="detail-list"
+                className={`${styles.select} ${list ? styles.selectHasSwatch : ""}`}
+                value={task.listId ?? ""}
+                onChange={(e) => void onUpdate({ listId: e.target.value || null })}
+              >
+                <option value="">インボックス</option>
+                {lists.map((l) => (
+                  <option key={l.id} value={l.id}>
+                    {l.name}
+                  </option>
+                ))}
+              </select>
+              <ChevronDownIcon className={styles.selectChevron} />
+            </div>
+          </dd>
         </dl>
 
         {/* メモ */}
@@ -245,8 +282,9 @@ export function TaskPanel({ task, today, saved, error, onUpdate, onDelete, onClo
       </div>
 
       {confirming && (
-        <ConfirmDelete
-          title={task.title}
+        <ConfirmDialog
+          title="タスクを削除"
+          message={`『${task.title}』を削除します。元に戻せません。`}
           onCancel={() => setConfirming(false)}
           onConfirm={() => {
             setConfirming(false);
@@ -255,51 +293,5 @@ export function TaskPanel({ task, today, saved, error, onUpdate, onDelete, onClo
         />
       )}
     </aside>
-  );
-}
-
-// 削除の確認ダイアログ(画面の中に出す。ブラウザの confirm() は使わない)。
-// <dialog> の showModal() を使うと、背景の操作を止め、Esc で閉じ、フォーカスもダイアログの中に留まる
-function ConfirmDelete({ title, onCancel, onConfirm }: { title: string; onCancel: () => void; onConfirm: () => void }) {
-  const ref = useRef<HTMLDialogElement>(null);
-  const cancelRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    const dialog = ref.current;
-    if (!dialog) return;
-    dialog.showModal();
-    cancelRef.current?.focus(); // 誤って消さないよう、最初は「キャンセル」にフォーカス
-    return () => dialog.close();
-  }, []);
-
-  return (
-    <dialog
-      ref={ref}
-      className={styles.dialog}
-      aria-labelledby="delete-title"
-      aria-describedby="delete-desc"
-      onCancel={(e) => {
-        e.preventDefault(); // Esc で閉じるときも、状態をそろえるため onCancel を通す
-        onCancel();
-      }}
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onCancel(); // 背景(ダイアログの外側)を押したら閉じる
-      }}
-    >
-      <div className={styles.dialogBox}>
-        <h2 id="delete-title" className={styles.dialogTitle}>タスクを削除</h2>
-        <p id="delete-desc" className={styles.dialogText}>
-          『{title}』を削除します。元に戻せません。
-        </p>
-        <div className={styles.dialogActions}>
-          <button ref={cancelRef} type="button" className={styles.dialogCancel} onClick={onCancel}>
-            キャンセル
-          </button>
-          <button type="button" className={styles.dialogDelete} onClick={onConfirm}>
-            削除
-          </button>
-        </div>
-      </div>
-    </dialog>
   );
 }

@@ -30,8 +30,13 @@ export const taskPriority = z.enum(["high", "medium", "low"], {
 
 export const taskStatus = z.enum(["todo", "done"], { error: "status は todo か done を指定してください" });
 
-// POST /api/tasks(タイトルだけ。期限・優先度は詳細パネルで変える。リストはステップ6で足す)
-export const createTaskSchema = z.object({ title: taskTitle }, BODY_ERROR);
+// リスト: リストの ID。null で「インボックス」(どのリストにも入れない)
+export const taskListId = z.uuid({ error: "リストが見つかりません" }).nullable();
+
+// POST /api/tasks … タイトルは必須。リスト(無ければインボックス)と期限は、開いているビューに合わせて画面が送る
+export const createTaskSchema = z
+  .object({ title: taskTitle, listId: taskListId.optional(), dueDate: taskDueDate.optional() }, BODY_ERROR)
+  .strict();
 
 // PATCH /api/tasks/:id … 送った項目だけを変える(一部更新)。何も送らない・知らない項目は 400
 export const updateTaskSchema = z
@@ -42,11 +47,32 @@ export const updateTaskSchema = z
       dueDate: taskDueDate.optional(),
       priority: taskPriority.optional(),
       status: taskStatus.optional(),
+      listId: taskListId.optional(),
     },
     BODY_ERROR,
   )
   .strict()
   .refine((v) => Object.keys(v).length > 0, { error: "変更する項目を指定してください" });
 
+// GET /api/tasks の絞り込み(仕様書 第7章)
+//   ?listId=<リストの ID> または ?listId=inbox … そのリスト / インボックスのタスク
+//   ?view=today&today=YYYY-MM-DD … 期限が今日以前の未完了タスク(全リスト横断)。
+//     「今日」は利用者の端末の日付で決める(仕様書 第8章 ルール5)ので、画面が端末の日付を today で渡す
+//   ?status=todo|done … 未完了 / 完了だけ
+export const taskQuerySchema = z
+  .strictObject(
+    {
+      listId: z.union([z.literal("inbox"), z.uuid()], { error: "listId はリストの ID か inbox を指定してください" }).optional(),
+      view: z.literal("today", { error: "view は today だけ指定できます" }).optional(),
+      today: z.iso.date({ error: "today は YYYY-MM-DD の形で指定してください" }).optional(),
+      status: taskStatus.optional(),
+    },
+    { error: "知らない絞り込みの項目があります" },
+  )
+  .refine((v) => v.view !== "today" || v.today !== undefined, {
+    error: "view=today のときは、端末の今日の日付を today=YYYY-MM-DD で指定してください",
+  });
+
+export type TaskQuery = z.infer<typeof taskQuerySchema>;
 export type CreateTaskInput = z.infer<typeof createTaskSchema>;
 export type UpdateTaskInput = z.infer<typeof updateTaskSchema>;

@@ -31,8 +31,33 @@
 .head {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
+  gap: 12px;
   padding: 14px 14px 6px 24px;
+}
+
+/* 入っているリスト(PC のみ) */
+.crumb {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-ui);
+  font-size: var(--fs-ui-s);
+  color: var(--text-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* リストの色の小さな四角 */
+.swatch {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--r-xs);
+  flex-shrink: 0;
+  background: var(--c, var(--accent));
 }
 
 .back,
@@ -229,6 +254,55 @@
   font-weight: var(--fw-ui-strong);
 }
 
+/* リストの選択(ブラウザ標準の選択肢を使う。スマホでは端末の選び方で開く) */
+.selectWrap {
+  position: relative;
+  display: inline-flex;
+  align-self: flex-start; /* スマホで行いっぱいに伸びないように */
+  align-items: center;
+  max-width: 100%;
+}
+
+.selectWrap > .swatch {
+  position: absolute;
+  left: 11px;
+  pointer-events: none;
+}
+
+.select {
+  appearance: none;
+  max-width: 100%;
+  height: 34px;
+  padding: 0 30px 0 10px;
+  border: var(--btn2-border);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-family: var(--font-ui);
+  font-size: var(--fs-ui-m);
+  text-overflow: ellipsis;
+  cursor: pointer;
+  outline: none;
+  transition: border-color var(--t-color), box-shadow var(--t-color), background-color var(--t-color);
+}
+
+.selectHasSwatch {
+  padding-left: 26px;
+}
+
+.select:focus-visible {
+  border-color: var(--accent);
+  box-shadow: var(--ring);
+}
+
+.selectChevron {
+  position: absolute;
+  right: 10px;
+  color: var(--text-3);
+  pointer-events: none;
+}
+
 /* 切り替えボタン(期限のすぐ選ぶ・優先度) */
 .seg {
   display: inline-flex;
@@ -419,75 +493,6 @@
   background: var(--danger-press);
 }
 
-/* ---------- 削除の確認ダイアログ ---------- */
-.dialog {
-  width: min(400px, calc(100vw - 32px));
-  padding: 0;
-  border: var(--card-border);
-  border-radius: var(--r-3xl);
-  background: var(--surface);
-  color: var(--text);
-  box-shadow: var(--card-shadow);
-}
-
-.dialog::backdrop {
-  background: var(--scrim);
-}
-
-.dialogBox {
-  padding: 24px;
-}
-
-.dialogTitle {
-  font-size: 18px;
-  line-height: 1.4;
-}
-
-.dialogText {
-  margin: 10px 0 0;
-  color: var(--text-2);
-  line-height: 1.7;
-  overflow-wrap: anywhere;
-}
-
-.dialogActions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  margin-top: 24px;
-}
-
-.dialogCancel,
-.dialogDelete {
-  height: 40px;
-  padding: 0 16px;
-  border-radius: var(--r-lg);
-  font: inherit;
-  font-family: var(--font-ui);
-  font-size: 14px;
-  font-weight: var(--fw-ui-strong);
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  transition: transform var(--t-press), background-color var(--t-color), border-color var(--t-color);
-}
-
-.dialogCancel:active,
-.dialogDelete:active {
-  transform: var(--press-transform);
-}
-
-.dialogCancel {
-  border: var(--btn2-border);
-  background: var(--surface);
-  color: var(--btn2-fg);
-}
-
-.dialogDelete {
-  border: 0;
-  background: var(--danger);
-  color: var(--on-accent);
-}
-
 @media (hover: hover) and (pointer: fine) {
   .close:hover {
     background: var(--hover);
@@ -503,17 +508,17 @@
     background: var(--seg-hover-bg);
   }
 
+  .select:hover {
+    background: var(--btn2-hover-bg);
+    border-color: var(--btn2-border-hover);
+  }
+
   .memo:hover:not(:focus) {
     border-color: var(--line-strong);
   }
 
   .delete:hover {
     background: var(--danger-soft);
-  }
-
-  .dialogCancel:hover {
-    background: var(--btn2-hover-bg);
-    border-color: var(--btn2-border-hover);
   }
 }
 
@@ -538,6 +543,7 @@
   }
 
   .close,
+  .crumb,
   .pcStatus {
     display: none;
   }
@@ -620,6 +626,11 @@
 
   .seg > button {
     height: 34px;
+  }
+
+  .select {
+    height: 40px;
+    font-size: 16px; /* iOS で選ぶときに拡大されないように */
   }
 
   .dateInput {

@@ -1,0 +1,552 @@
+/* サイドバー(PC)とスマホのメニュー。references/design/html/pc-main.html の左側・sp-menu.html を元に、値はトークンだけを使う */
+
+.nav {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.brandRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px 20px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logoSm {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--r-md);
+  background: var(--logo-bg);
+  color: var(--logo-fg);
+  border: var(--logo-border);
+  box-shadow: var(--shadow-logo);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.brandName {
+  font-family: var(--font-heading);
+  font-weight: var(--fw-heading);
+  font-size: var(--fs-brand);
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+
+.iconBtn {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-lg);
+  background: none;
+  color: var(--text);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform var(--t-press), background-color var(--t-color);
+}
+
+.iconBtn:active {
+  transform: var(--press-transform);
+  background: var(--press);
+}
+
+/* リストが多いときは、この部分だけスクロールする */
+.scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  /* 「…」メニューが切れないように、下に余白をとる */
+  padding-bottom: 8px;
+}
+
+.items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.navItem {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 38px;
+  padding: 0 10px 0 var(--nav-pad-l);
+  border: 0;
+  border-radius: var(--r-md);
+  background: none;
+  color: var(--text);
+  font: inherit;
+  font-family: var(--font-ui);
+  font-size: var(--fs-ui-l);
+  line-height: 1;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color var(--t-color), box-shadow var(--t-color);
+}
+
+.navItem:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+}
+
+.navIcon {
+  flex-shrink: 0;
+  color: var(--text-3);
+}
+
+.label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.3;
+}
+
+.count {
+  margin-left: auto;
+  font-family: var(--font-num);
+  font-size: var(--fs-count);
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.listDot {
+  width: 10px;
+  height: 10px;
+  margin: 0 4px;
+  border-radius: var(--r-sm);
+  flex-shrink: 0;
+  background: var(--c);
+}
+
+.muted {
+  color: var(--text-3);
+}
+
+/* 今いるビュー */
+.navItem[aria-current="page"] {
+  background: var(--nav-active-bg);
+  font-weight: var(--fw-ui-strong);
+  box-shadow: var(--nav-active-shadow);
+}
+
+.navItem[aria-current="page"] .navIcon,
+.navItem[aria-current="page"] .count {
+  color: var(--nav-active-fg);
+}
+
+.navItem[aria-current="page"] .count {
+  font-weight: var(--fw-ui-strong);
+}
+
+.navItem:not([aria-current="page"]):active {
+  background: var(--press);
+}
+
+.groupLabel {
+  margin: 0;
+  padding: 20px 10px 6px var(--nav-pad-l);
+  font-family: var(--font-ui);
+  font-size: var(--fs-ui-s);
+  font-weight: var(--fw-ui-strong);
+  color: var(--text-3);
+  letter-spacing: 0.02em;
+}
+
+/* ---------- 各リストの行と「…」メニュー ---------- */
+.row {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* メニューを開いている行は、下の行より手前に出す(メニューが下の行に隠れないように) */
+.rowMenuOpen {
+  z-index: 5;
+}
+
+/* 「…」の分だけ、件数を左に寄せる */
+.row > .navItem {
+  padding-right: 40px;
+}
+
+.menuWrap {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.more {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: none;
+  color: var(--text-3);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color var(--t-color), color var(--t-color), opacity var(--t-color);
+}
+
+.more:active,
+.more[aria-expanded="true"] {
+  background: var(--press);
+  color: var(--text);
+}
+
+.more:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+}
+
+.menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  z-index: 30;
+  width: 200px;
+  padding: 6px;
+  border: var(--card-border);
+  border-radius: var(--r-xl);
+  background: var(--surface);
+  box-shadow: var(--card-shadow);
+  transform-origin: top right;
+  animation: menu-in 150ms var(--ease-out, ease-out);
+}
+
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+}
+
+.menuItem {
+  width: 100%;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: var(--r-md);
+  background: none;
+  color: var(--text);
+  font: inherit;
+  font-family: var(--font-ui);
+  font-size: var(--fs-ui-l);
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.menuItem svg {
+  flex-shrink: 0;
+  color: var(--text-3);
+}
+
+.menuItem:focus-visible,
+.colorBtn:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+}
+
+.menuItem:active {
+  background: var(--press);
+}
+
+.menuDanger,
+.menuDanger svg {
+  color: var(--danger);
+}
+
+.menuColors {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin: 4px 0;
+  padding: 8px 10px;
+  border-top: var(--divider-h) solid var(--line-soft);
+  border-bottom: var(--divider-h) solid var(--line-soft);
+}
+
+.colorBtn {
+  justify-self: center;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-md);
+  background: var(--c);
+  color: var(--on-accent);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform var(--t-press);
+}
+
+.colorBtn:active {
+  transform: var(--press-transform);
+}
+
+.colorBtn[aria-checked="true"] {
+  box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--c);
+}
+
+/* ---------- リスト名の入力(追加・名前変更) ---------- */
+.nameForm {
+  padding: 2px 0;
+}
+
+.nameField {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 38px;
+  padding: 0 6px 0 var(--nav-pad-l);
+  border: var(--bw) solid var(--accent);
+  border-radius: var(--r-md);
+  background: var(--input-bg);
+  box-shadow: var(--ring);
+}
+
+.nameFieldError {
+  border-color: var(--danger);
+}
+
+.nameInput {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-family: var(--font-ui);
+  font-size: var(--fs-ui-l);
+  caret-color: var(--accent);
+}
+
+.nameInput::placeholder {
+  color: var(--placeholder);
+  opacity: 1;
+}
+
+.nameError {
+  margin: 6px 0 2px;
+  padding-left: var(--nav-pad-l);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--danger);
+}
+
+.nameError svg {
+  flex-shrink: 0;
+}
+
+/* ---------- アカウント ---------- */
+.account {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 2px 0 10px;
+  border-top: var(--bw) solid var(--line);
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-full);
+  background: var(--avatar-bg);
+  color: var(--avatar-fg);
+  border: var(--avatar-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--avatar-font);
+  font-weight: var(--fw-heading);
+  font-size: var(--fs-avatar);
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.who {
+  flex: 1;
+  min-width: 0;
+}
+
+.name {
+  font-weight: var(--fw-ui-strong);
+  font-size: var(--fs-name);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mail {
+  font-size: 12px;
+  color: var(--text-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.logout {
+  flex-shrink: 0;
+  height: 36px;
+  padding: 0 12px;
+  border: var(--btn2-border);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  color: var(--btn2-fg);
+  font: inherit;
+  font-family: var(--font-ui);
+  font-size: var(--fs-ui-m);
+  font-weight: var(--fw-ui-medium);
+  box-shadow: var(--shadow-logout);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform var(--t-press), background-color var(--t-color), border-color var(--t-color);
+}
+
+.logout:active {
+  transform: var(--press-transform);
+}
+
+/* ---------- スマホのメニュー(sp-menu.html): 行を高く、押しやすく ---------- */
+.drawer .brandRow {
+  padding: 0 0 12px 10px;
+}
+
+.drawer .navItem {
+  height: 48px;
+  gap: 12px;
+  padding-right: 12px;
+  border-radius: var(--r-lg);
+}
+
+.drawer .row > .navItem {
+  padding-right: 52px;
+}
+
+.drawer .count {
+  font-size: var(--fs-count-lg);
+}
+
+.drawer .listDot {
+  width: 12px;
+  height: 12px;
+}
+
+.drawer .more {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-md);
+}
+
+.drawer .nameField {
+  height: 48px;
+  border-radius: var(--r-lg);
+}
+
+.drawer .nameInput {
+  font-size: 16px; /* iOS で入力時に拡大されないように */
+}
+
+.drawer .menuItem {
+  height: 44px;
+}
+
+.drawer .colorBtn {
+  width: 34px;
+  height: 34px;
+}
+
+.drawer .account {
+  padding: 14px 0 0 12px;
+}
+
+.drawer .avatar {
+  width: 36px;
+  height: 36px;
+}
+
+.drawer .logout {
+  height: 44px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .navItem:not([aria-current="page"]):hover,
+  .iconBtn:hover,
+  .menuItem:hover {
+    background: var(--hover);
+  }
+
+  .more:hover {
+    background: var(--hover);
+    color: var(--text);
+  }
+
+  /* PC では、行にマウスを乗せたとき・フォーカスしたときだけ、件数の場所に「…」を出す */
+  .row > .navItem {
+    padding-right: 10px;
+  }
+
+  .drawer .row > .navItem {
+    padding-right: 12px;
+  }
+
+  .row:not(:hover):not(:focus-within):not(.rowMenuOpen) .more {
+    opacity: 0;
+  }
+
+  .row:is(:hover, :focus-within, .rowMenuOpen) .count {
+    opacity: 0;
+  }
+
+  .logout:hover {
+    background: var(--btn2-hover-bg);
+    border-color: var(--btn2-border-hover);
+    color: var(--text);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu {
+    animation: none;
+  }
+}
