@@ -4,6 +4,8 @@
 
 **本番:** https://todo-app-rho-steel-65.vercel.app
 
+試す場合は、架空のメールアドレス(例: test@example.com)で登録できます。確認メールは届きません。データは予告なく消すことがあります。
+
 > **English summary**
 > A personal to-do web app (Next.js 16, Supabase, Prisma 7), deployed on Vercel.
 > I acted as PM / BA: I wrote the spec, split the work into 7 steps, directed Claude Code (an AI coding agent) with written step instructions, and reviewed and accepted each step before moving on.
@@ -48,7 +50,8 @@
 迷う点は「小さく作って、後で広げやすい」を基準に決めました。たとえば、タグではなくリスト(1タスクに1つ)にする、状態は「未完了 / 完了」の2つだけにする、などです。
 
 ### 2. 動くプロトタイプで流れを確かめた
-作り始める前に、画面のつながりと操作の流れを、動くプロトタイプで確かめました。
+作り始める前に、claude.ai で1ファイルの HTML のプロトタイプを作りました([references/todo-prototype.html](references/todo-prototype.html))。データはブラウザの中だけに保存する作りで、画面の流れと使い心地を確かめました。
+(GitHub 上ではコードとして表示されます。ファイルをダウンロードしてブラウザで開くと、そのまま動きます。)
 
 ### 3. デザインを作り、磨き、テーマを試した
 6画面のデザインのお手本(HTML)を作りました([references/design/html/](references/design/html/))。デザイン用のスキル(AI への指示のまとまり)で見た目を磨き、色・フォント・角丸・影などをすべて「トークン」(名前の付いた値)にしました。そのうえで、ブルー・ピクセル・ピクセル貴族の3つのテーマを切り替えて試し、本番は標準のブルーにしました([テーマの比較スクショ](references/screenshots/theme/))。

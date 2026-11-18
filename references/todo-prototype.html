@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>シンプルTodo プロトタイプ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff; --bg2:#f7f7f5; --line:#e6e6e2; --ink:#1f1f1d; --muted:#7a7a74;
+  --accent:#2f6fde; --accent-soft:#eaf1fd; --danger:#d93b3b; --danger-soft:#fdecec;
+  --high:#e8590c; --radius:10px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font-family:"Noto Sans JP",system-ui,sans-serif;color:var(--ink);background:var(--bg);font-size:14px;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer;border:none;background:none}
+input,textarea,select{font:inherit;color:inherit}
+.hidden{display:none!important}
+
+/* ---------- Auth ---------- */
+.auth{min-height:100%;display:flex;align-items:center;justify-content:center;background:var(--bg2);padding:24px}
+.auth-card{width:100%;max-width:360px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:32px 28px}
+.auth-card h1{font-size:20px;margin:0 0 4px}
+.auth-card .sub{color:var(--muted);margin:0 0 24px;font-size:13px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px;font-weight:500}
+.field input,.field textarea,.field select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:#fff;outline:none;transition:border-color .15s}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--accent)}
+.err{color:var(--danger);font-size:12px;margin-top:6px;min-height:0}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 16px;border-radius:8px;font-weight:500}
+.btn-primary{background:var(--accent);color:#fff;width:100%}
+.btn-primary:hover{filter:brightness(.95)}
+.btn-ghost{color:var(--muted)}
+.btn-ghost:hover{background:var(--bg2)}
+.btn-danger{background:var(--danger);color:#fff}
+.auth-switch{text-align:center;margin-top:18px;font-size:13px;color:var(--muted)}
+.auth-switch a{color:var(--accent);cursor:pointer;text-decoration:none}
+.proto-note{margin-top:20px;padding:10px 12px;background:var(--bg2);border-radius:8px;font-size:12px;color:var(--muted);line-height:1.6}
+
+/* ---------- App layout ---------- */
+.app{display:flex;height:100%}
+.sidebar{width:248px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:16px 10px}
+.brand{font-weight:700;font-size:16px;padding:4px 10px 16px;display:flex;align-items:center;gap:8px}
+.brand-dot{width:10px;height:10px;border-radius:3px;background:var(--accent)}
+.nav-item{display:flex;align-items:center;gap:10px;width:100%;padding:8px 10px;border-radius:8px;text-align:left;position:relative}
+.nav-item:hover{background:#ececea}
+.nav-item.active{background:#fff;box-shadow:0 0 0 1px var(--line);font-weight:500}
+.nav-item .count{margin-left:auto;font-size:12px;color:var(--muted)}
+.nav-icon{width:18px;text-align:center;color:var(--muted)}
+.list-dot{width:10px;height:10px;border-radius:50%;margin:0 4px}
+.nav-section{font-size:11px;color:var(--muted);padding:18px 10px 6px;font-weight:500;letter-spacing:.04em}
+.lists{flex:1;overflow:auto}
+.list-menu-btn{width:24px;height:24px;border-radius:6px;color:var(--muted);display:none;margin-left:4px}
+.nav-item:hover .list-menu-btn,.nav-item.active .list-menu-btn{display:inline-flex;align-items:center;justify-content:center}
+.nav-item:hover .count{display:none}
+.list-menu-btn:hover{background:#ddd}
+.add-list{color:var(--muted)}
+.inline-input{width:100%;padding:7px 10px;border:1px solid var(--accent);border-radius:8px;outline:none;background:#fff}
+.sidebar-foot{border-top:1px solid var(--line);padding-top:10px;margin-top:10px;display:flex;align-items:center;gap:8px;padding-left:10px}
+.avatar{width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+.user-name{flex:1;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.main{flex:1;display:flex;flex-direction:column;min-width:0}
+.topbar{display:flex;align-items:center;gap:10px;padding:20px 28px 8px}
+.hamburger{display:none;width:36px;height:36px;border-radius:8px;font-size:18px}
+.hamburger:hover{background:var(--bg2)}
+.view-title{font-size:22px;font-weight:700;margin:0}
+.view-date{color:var(--muted);font-size:13px;margin-left:4px}
+.content{padding:8px 28px 40px;overflow:auto;flex:1}
+.add-row{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:var(--radius);padding:4px 6px 4px 14px;margin-bottom:6px;transition:border-color .15s}
+.add-row:focus-within{border-color:var(--accent)}
+.add-row .plus{color:var(--accent);font-size:18px}
+.add-row input{flex:1;border:none;outline:none;padding:10px 0;background:none}
+.add-row .btn{padding:7px 12px;font-size:13px}
+.add-err{color:var(--danger);font-size:12px;margin:0 0 6px 4px;min-height:0}
+.tabs{display:flex;gap:4px;margin:14px 0 8px;border-bottom:1px solid var(--line)}
+.tab{padding:8px 12px;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px}
+.tab.active{color:var(--ink);border-bottom-color:var(--ink);font-weight:500}
+.tab .n{font-size:12px;margin-left:4px;color:var(--muted)}
+
+.task{display:flex;align-items:center;gap:12px;padding:11px 8px;border-bottom:1px solid var(--line);border-radius:6px;cursor:pointer}
+.task:hover{background:var(--bg2)}
+.task.selected{background:var(--accent-soft)}
+.check{width:20px;height:20px;border-radius:50%;border:1.5px solid #b9b9b3;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.check:hover{border-color:var(--accent)}
+.check.high{border-color:var(--high)}
+.task.done .check{background:var(--accent);border-color:var(--accent)}
+.check svg{opacity:0}
+.task.done .check svg{opacity:1}
+.task-body{flex:1;min-width:0}
+.task-title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.task.done .task-title{text-decoration:line-through;color:var(--muted)}
+.task-meta{display:flex;gap:10px;font-size:12px;color:var(--muted);margin-top:2px;flex-wrap:wrap}
+.task-meta:empty{display:none}
+.meta-due.overdue{color:var(--danger);font-weight:500}
+.meta-due.today{color:var(--accent);font-weight:500}
+.prio-badge{font-size:11px;padding:2px 8px;border-radius:999px;background:#fff1e8;color:var(--high);font-weight:500;flex-shrink:0}
+.task.done .prio-badge{opacity:.5}
+.memo-icon{color:var(--muted);font-size:12px}
+.empty{text-align:center;color:var(--muted);padding:56px 0}
+.empty .big{font-size:32px;margin-bottom:8px;opacity:.5}
+.bulk{margin-top:14px}
+
+/* ---------- Detail panel ---------- */
+.panel{width:360px;flex-shrink:0;border-left:1px solid var(--line);background:#fff;display:flex;flex-direction:column}
+.panel-head{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 8px 20px}
+.panel-head .label{font-size:12px;color:var(--muted)}
+.icon-btn{width:32px;height:32px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;color:var(--muted);font-size:18px}
+.icon-btn:hover{background:var(--bg2)}
+.panel-body{padding:4px 20px 20px;overflow:auto;flex:1}
+.panel-title{display:flex;gap:12px;align-items:flex-start;margin-bottom:16px}
+.panel-title .check{margin-top:9px;cursor:pointer}
+.panel-title.done .check{background:var(--accent);border-color:var(--accent)}
+.panel-title.done .check svg{opacity:1}
+.panel-title textarea{flex:1;border:1px solid transparent;border-radius:8px;padding:6px 8px;font-size:17px;font-weight:500;resize:none;outline:none;line-height:1.5}
+.panel-title textarea:hover{border-color:var(--line)}
+.panel-title textarea:focus{border-color:var(--accent)}
+.prio-group{display:flex;gap:6px}
+.prio-opt{flex:1;padding:8px 0;border:1px solid var(--line);border-radius:8px;font-size:13px}
+.prio-opt.active{border-color:var(--ink);font-weight:500}
+.prio-opt.active.high{border-color:var(--high);color:var(--high);background:#fff1e8}
+.due-row{display:flex;gap:6px}
+.due-row input{flex:1}
+.chip-btn{padding:0 10px;border:1px solid var(--line);border-radius:8px;font-size:12px;color:var(--muted);white-space:nowrap}
+.chip-btn:hover{background:var(--bg2)}
+.panel-foot{border-top:1px solid var(--line);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--muted)}
+.del-btn{color:var(--danger);padding:6px 10px;border-radius:8px}
+.del-btn:hover{background:var(--danger-soft)}
+.saved{transition:opacity .3s}
+.char-count{float:right;font-weight:400}
+
+/* ---------- Dialog / menu / toast ---------- */
+.overlay{position:fixed;inset:0;background:rgba(20,20,18,.35);display:flex;align-items:center;justify-content:center;z-index:50;padding:20px}
+.dialog{background:#fff;border-radius:14px;padding:22px;max-width:380px;width:100%}
+.dialog h3{margin:0 0 8px;font-size:16px}
+.dialog p{margin:0 0 20px;color:var(--muted);line-height:1.6}
+.dialog-actions{display:flex;justify-content:flex-end;gap:8px}
+.dialog-actions .btn{width:auto}
+.menu{position:fixed;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.08);padding:4px;z-index:40;min-width:150px}
+.menu button{display:block;width:100%;text-align:left;padding:8px 12px;border-radius:6px}
+.menu button:hover{background:var(--bg2)}
+.menu .danger{color:var(--danger)}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:8px;font-size:13px;z-index:60;box-shadow:0 6px 20px rgba(0,0,0,.15)}
+.backdrop{display:none}
+
+/* ---------- Responsive (< 768px) ---------- */
+@media (max-width:767px){
+  .hamburger{display:inline-flex;align-items:center;justify-content:center}
+  .sidebar{position:fixed;top:0;bottom:0;left:0;z-index:30;transform:translateX(-100%);transition:transform .2s;background:var(--bg2)}
+  .sidebar.open{transform:none;box-shadow:4px 0 24px rgba(0,0,0,.1)}
+  .backdrop.show{display:block;position:fixed;inset:0;background:rgba(0,0,0,.25);z-index:25}
+  .topbar{padding:14px 16px 4px}
+  .content{padding:4px 16px 32px}
+  .panel{position:fixed;inset:0;width:auto;z-index:35;border-left:none}
+  .view-date{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- S-01 ログイン -->
+<div id="s01" class="auth hidden">
+  <form class="auth-card" id="loginForm" novalidate>
+    <h1>ログイン</h1>
+    <p class="sub">シンプルTodo へようこそ</p>
+    <div class="field"><label>メールアドレス</label><input id="loginEmail" type="email" placeholder="you@example.com" autocomplete="email"><div class="err" id="loginEmailErr"></div></div>
+    <div class="field"><label>パスワード</label><input id="loginPw" type="password" placeholder="8文字以上" autocomplete="current-password"><div class="err" id="loginPwErr"></div></div>
+    <button class="btn btn-primary" type="submit">ログイン</button>
+    <div class="auth-switch">アカウントがない方は <a data-go="s02">新規登録</a></div>
+    <div class="proto-note">プロトタイプ版です。形式が正しければどのメールとパスワードでもログインできます。データはこのブラウザの中だけに保存されます。</div>
+  </form>
+</div>
+
+<!-- S-02 新規登録 -->
+<div id="s02" class="auth hidden">
+  <form class="auth-card" id="signupForm" novalidate>
+    <h1>新規登録</h1>
+    <p class="sub">メールアドレスでアカウントを作成</p>
+    <div class="field"><label>名前</label><input id="suName" type="text" placeholder="Erika"><div class="err" id="suNameErr"></div></div>
+    <div class="field"><label>メールアドレス</label><input id="suEmail" type="email" placeholder="you@example.com"><div class="err" id="suEmailErr"></div></div>
+    <div class="field"><label>パスワード</label><input id="suPw" type="password" placeholder="8文字以上"><div class="err" id="suPwErr"></div></div>
+    <button class="btn btn-primary" type="submit">登録する</button>
+    <div class="auth-switch">すでにアカウントがある方は <a data-go="s01">ログイン</a></div>
+  </form>
+</div>
+
+<!-- S-03 タスク一覧 + S-04 詳細 -->
+<div id="s03" class="app hidden">
+  <div class="backdrop" id="backdrop"></div>
+  <aside class="sidebar" id="sidebar">
+    <div class="brand"><span class="brand-dot"></span>シンプルTodo</div>
+    <button class="nav-item" data-view="today"><span class="nav-icon">☀︎</span>今日<span class="count" id="cntToday"></span></button>
+    <button class="nav-item" data-view="inbox"><span class="nav-icon">▢</span>インボックス<span class="count" id="cntInbox"></span></button>
+    <div class="nav-section">リスト</div>
+    <div class="lists" id="lists"></div>
+    <div id="addListWrap"><button class="nav-item add-list" id="addListBtn"><span class="nav-icon">＋</span>リストを追加</button></div>
+    <div class="sidebar-foot">
+      <div class="avatar" id="avatar">E</div>
+      <div class="user-name" id="userName"></div>
+      <button class="icon-btn" id="userMenuBtn" title="メニュー">⋯</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <button class="hamburger" id="hamburger" aria-label="メニュー">☰</button>
+      <h2 class="view-title" id="viewTitle"></h2><span class="view-date" id="viewDate"></span>
+    </div>
+    <div class="content">
+      <form class="add-row" id="addForm" novalidate>
+        <span class="plus">＋</span>
+        <input id="addInput" placeholder="タスクを追加(Enterで登録)" maxlength="120" autocomplete="off">
+        <button class="btn btn-ghost" type="submit">追加</button>
+      </form>
+      <div class="add-err" id="addErr"></div>
+      <div class="tabs" id="tabs">
+        <button class="tab" data-filter="all">すべて<span class="n" id="nAll"></span></button>
+        <button class="tab" data-filter="todo">未完了<span class="n" id="nTodo"></span></button>
+        <button class="tab" data-filter="done">完了<span class="n" id="nDone"></span></button>
+      </div>
+      <div id="taskList"></div>
+      <div class="bulk hidden" id="bulkWrap"><button class="btn btn-ghost" id="bulkDel">完了済みをすべて削除</button></div>
+    </div>
+  </main>
+
+  <aside class="panel hidden" id="panel">
+    <div class="panel-head">
+      <span class="label">S-04 タスク詳細</span>
+      <button class="icon-btn" id="closePanel" aria-label="閉じる">×</button>
+    </div>
+    <div class="panel-body">
+      <div class="panel-title" id="pTitleWrap">
+        <span class="check" id="pCheck"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2.5 6.2l2.3 2.3 4.7-4.9" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <textarea id="pTitle" rows="2" maxlength="120"></textarea>
+      </div>
+      <div class="err" id="pTitleErr" style="margin:-10px 0 12px"></div>
+      <div class="field"><label>期限</label>
+        <div class="due-row"><input type="date" id="pDue"><button class="chip-btn" data-due="0">今日</button><button class="chip-btn" data-due="1">明日</button><button class="chip-btn" data-due="clear">なし</button></div>
+      </div>
+      <div class="field"><label>優先度</label>
+        <div class="prio-group" id="pPrio">
+          <button class="prio-opt high" data-p="high">高</button>
+          <button class="prio-opt" data-p="medium">中</button>
+          <button class="prio-opt" data-p="low">低</button>
+        </div>
+      </div>
+      <div class="field"><label>リスト</label><select id="pList"></select></div>
+      <div class="field"><label>メモ <span class="char-count" id="pMemoCount"></span></label><textarea id="pMemo" rows="6" placeholder="詳細やリンクなど"></textarea><div class="err" id="pMemoErr"></div></div>
+    </div>
+    <div class="panel-foot">
+      <span class="saved" id="savedNote"></span>
+      <button class="del-btn" id="pDelete">削除</button>
+    </div>
+  </aside>
+</div>
+
+<div id="overlayRoot"></div>
+
+<script>
+(() => {
+/* ================= データ(本番ではSupabaseのDB) ================= */
+const KEY = 'simple-todo-proto-v1';
+const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+const pad = n => String(n).padStart(2, '0');
+const ymd = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; // 端末の日付で判定
+const todayStr = () => ymd(new Date());
+const addDays = n => { const d = new Date(); d.setDate(d.getDate() + n); return ymd(d); };
+
+function seed() {
+  const work = { id: uid(), name: '仕事', color: '#2f6fde' };
+  const home = { id: uid(), name: '買い物', color: '#2b9a66' };
+  const now = Date.now();
+  const t = (title, listId, due, priority, status = 'todo', description = '') => ({
+    id: uid(), title, listId, dueDate: due, priority, status, description,
+    completedAt: status === 'done' ? now : null, createdAt: now - Math.random() * 1e7, updatedAt: now
+  });
+  return {
+    user: null,
+    lists: [work, home],
+    tasks: [
+      t('請求書を送る', work.id, addDays(-1), 'high', 'todo', '先月分。PDFにして経理へ'),
+      t('定例ミーティングの議事録をまとめる', work.id, todayStr(), 'medium'),
+      t('来週の出張資料を準備する', work.id, addDays(3), 'low'),
+      t('牛乳と卵', home.id, todayStr(), 'medium'),
+      t('洗剤のストックを確認', home.id, null, 'low', 'done'),
+      t('読みたい本をメモする', null, null, 'medium'),
+    ]
+  };
+}
+
+let db;
+function load() {
+  try { const raw = localStorage.getItem(KEY); db = raw ? JSON.parse(raw) : seed(); }
+  catch { db = seed(); }
+}
+function save() { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch {} }
+load();
+
+/* ================= 画面の状態 ================= */
+const ui = { view: 'today', filter: 'todo', selectedId: null };
+const $ = id => document.getElementById(id);
+
+/* ================= 共通UI ================= */
+function toast(msg) {
+  const el = document.createElement('div'); el.className = 'toast'; el.textContent = msg;
+  document.body.appendChild(el); setTimeout(() => el.remove(), 2400);
+}
+function confirmDialog({ title, body, okText = '削除する' }) {
+  return new Promise(res => {
+    const root = $('overlayRoot');
+    root.innerHTML = `<div class="overlay"><div class="dialog"><h3></h3><p></p><div class="dialog-actions"><button class="btn btn-ghost" data-a="no">キャンセル</button><button class="btn btn-danger" data-a="ok"></button></div></div></div>`;
+    root.querySelector('h3').textContent = title;
+    root.querySelector('p').textContent = body;
+    root.querySelector('[data-a=ok]').textContent = okText;
+    const close = v => { root.innerHTML = ''; res(v); };
+    root.querySelector('.overlay').addEventListener('click', e => {
+      if (e.target.classList.contains('overlay')) close(false);
+      const a = e.target.dataset.a; if (a) close(a === 'ok');
+    });
+  });
+}
+function openMenu(anchor, items) {
+  closeMenu();
+  const m = document.createElement('div'); m.className = 'menu'; m.id = 'menu';
+  items.forEach(it => { const b = document.createElement('button'); b.textContent = it.label; if (it.danger) b.className = 'danger'; b.onclick = () => { closeMenu(); it.run(); }; m.appendChild(b); });
+  document.body.appendChild(m);
+  const r = anchor.getBoundingClientRect();
+  const top = Math.min(r.bottom + 4, window.innerHeight - m.offsetHeight - 8);
+  m.style.top = top + 'px'; m.style.left = Math.min(r.left, window.innerWidth - m.offsetWidth - 8) + 'px';
+  setTimeout(() => document.addEventListener('click', closeMenu, { once: true }), 0);
+}
+function closeMenu() { const m = $('menu'); if (m) m.remove(); }
+
+/* ================= 画面切替(S-01 / S-02 / S-03) ================= */
+function show(screen) {
+  ['s01', 's02', 's03'].forEach(s => $(s).classList.toggle('hidden', s !== screen));
+}
+function route() {
+  // 未ログインで一覧を開こうとしたらログインへ戻す
+  if (!db.user) { show('s01'); return; }
+  show('s03'); renderAll();
+}
+document.querySelectorAll('[data-go]').forEach(a => a.addEventListener('click', () => { clearErrs(); show(a.dataset.go); }));
+
+/* ================= 入力チェック(バリデーション) ================= */
+const emailOk = v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+function clearErrs() { document.querySelectorAll('.auth .err').forEach(e => e.textContent = ''); }
+$('loginForm').addEventListener('submit', e => {
+  e.preventDefault(); clearErrs();
+  const em = $('loginEmail').value.trim(), pw = $('loginPw').value;
+  let ok = true;
+  if (!emailOk(em)) { $('loginEmailErr').textContent = 'メールアドレスの形式が正しくありません'; ok = false; }
+  if (pw.length < 8) { $('loginPwErr').textContent = '8文字以上で入力してください'; ok = false; }
+  if (!ok) return;
+  db.user = { email: em, name: em.split('@')[0] }; save(); route();
+});
+$('signupForm').addEventListener('submit', e => {
+  e.preventDefault(); clearErrs();
+  const nm = $('suName').value.trim(), em = $('suEmail').value.trim(), pw = $('suPw').value;
+  let ok = true;
+  if (!nm) { $('suNameErr').textContent = '名前を入力してください'; ok = false; }
+  if (!emailOk(em)) { $('suEmailErr').textContent = 'メールアドレスの形式が正しくありません'; ok = false; }
+  if (pw.length < 8) { $('suPwErr').textContent = '8文字以上で入力してください'; ok = false; }
+  if (!ok) return;
+  db.user = { email: em, name: nm }; save(); toast('アカウントを作成しました'); route();
+});
+
+/* ================= 並び順・絞り込み ================= */
+const prioRank = { high: 0, medium: 1, low: 2 };
+function sortTasks(a, b) {
+  if (a.status !== b.status) return a.status === 'todo' ? -1 : 1;           // 未完了が上
+  const da = a.dueDate || '9999-12-31', dbb = b.dueDate || '9999-12-31';
+  if (da !== dbb) return da < dbb ? -1 : 1;                                   // 期限が近い順(なしは最後)
+  if (a.priority !== b.priority) return prioRank[a.priority] - prioRank[b.priority]; // 優先度が高い順
+  return a.createdAt - b.createdAt;
+}
+function tasksInView(view = ui.view) {
+  if (view === 'today') return db.tasks.filter(t => t.dueDate && t.dueDate <= todayStr() && (t.status === 'todo' || ui.filter !== 'todo'));
+  if (view === 'inbox') return db.tasks.filter(t => !t.listId);
+  return db.tasks.filter(t => t.listId === view);
+}
+function todayTasks() { return db.tasks.filter(t => t.status === 'todo' && t.dueDate && t.dueDate <= todayStr()); }
+const listById = id => db.lists.find(l => l.id === id);
+
+/* ================= 描画 ================= */
+function renderAll() { renderSidebar(); renderMain(); renderPanel(); }
+
+function renderSidebar() {
+  $('userName').textContent = db.user.name;
+  $('avatar').textContent = (db.user.name[0] || 'U').toUpperCase();
+  $('cntToday').textContent = todayTasks().length || '';
+  $('cntInbox').textContent = db.tasks.filter(t => !t.listId && t.status === 'todo').length || '';
+  document.querySelectorAll('.nav-item[data-view]').forEach(b => b.classList.toggle('active', b.dataset.view === ui.view));
+
+  const wrap = $('lists'); wrap.innerHTML = '';
+  db.lists.forEach(l => {
+    const b = document.createElement('button');
+    b.className = 'nav-item' + (ui.view === l.id ? ' active' : '');
+    const cnt = db.tasks.filter(t => t.listId === l.id && t.status === 'todo').length;
+    b.innerHTML = `<span class="list-dot"></span><span class="ln"></span><span class="count">${cnt || ''}</span><span class="list-menu-btn" title="リストの操作">⋯</span>`;
+    b.querySelector('.list-dot').style.background = l.color;
+    b.querySelector('.ln').textContent = l.name;
+    b.onclick = e => {
+      if (e.target.classList.contains('list-menu-btn')) {
+        e.stopPropagation();
+        openMenu(e.target, [
+          { label: '名前を変更', run: () => renameList(l, b) },
+          { label: 'リストを削除', danger: true, run: () => deleteList(l) },
+        ]);
+        return;
+      }
+      setView(l.id);
+    };
+    wrap.appendChild(b);
+  });
+}
+
+function viewName() {
+  if (ui.view === 'today') return '今日';
+  if (ui.view === 'inbox') return 'インボックス';
+  return listById(ui.view)?.name || '';
+}
+
+function fmtDue(d) {
+  if (!d) return '';
+  const t = todayStr();
+  if (d === t) return '今日';
+  if (d === addDays(1)) return '明日';
+  if (d === addDays(-1)) return '昨日';
+  const [, m, dd] = d.split('-'); return `${Number(m)}/${Number(dd)}`;
+}
+
+function renderMain() {
+  $('viewTitle').textContent = viewName();
+  const now = new Date();
+  $('viewDate').textContent = ui.view === 'today' ? `${now.getMonth() + 1}月${now.getDate()}日(${'日月火水木金土'[now.getDay()]})` : '';
+
+  // 「今日」ビューでは追加したタスクの期限を今日にする
+  $('addInput').placeholder = ui.view === 'today' ? '今日やるタスクを追加(Enterで登録)' : 'タスクを追加(Enterで登録)';
+
+  const base = ui.view === 'today'
+    ? db.tasks.filter(t => t.dueDate && t.dueDate <= todayStr())
+    : tasksInView();
+  const nTodo = base.filter(t => t.status === 'todo').length, nDone = base.length - nTodo;
+  $('nAll').textContent = base.length; $('nTodo').textContent = nTodo; $('nDone').textContent = nDone;
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.filter === ui.filter));
+
+  const shown = base.filter(t => ui.filter === 'all' || t.status === ui.filter).sort(sortTasks);
+  const box = $('taskList'); box.innerHTML = '';
+
+  if (!shown.length) {
+    const msg = ui.filter === 'done' ? '完了したタスクはまだありません'
+      : ui.view === 'today' ? '今日やるタスクはありません。いい一日を!'
+      : 'タスクはありません。上の欄から追加しましょう';
+    box.innerHTML = `<div class="empty"><div class="big">✓</div><div></div></div>`;
+    box.querySelector('.empty div:last-child').textContent = msg;
+  }
+
+  shown.forEach(t => {
+    const row = document.createElement('div');
+    row.className = 'task' + (t.status === 'done' ? ' done' : '') + (ui.selectedId === t.id ? ' selected' : '');
+    row.innerHTML = `
+      <span class="check ${t.priority === 'high' ? 'high' : ''}" role="checkbox" aria-checked="${t.status === 'done'}" title="完了にする"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2.5 6.2l2.3 2.3 4.7-4.9" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <div class="task-body"><div class="task-title"></div><div class="task-meta"></div></div>`;
+    row.querySelector('.task-title').textContent = t.title;
+    const meta = row.querySelector('.task-meta');
+    if (t.dueDate) {
+      const s = document.createElement('span'); s.className = 'meta-due';
+      if (t.status === 'todo' && t.dueDate < todayStr()) s.classList.add('overdue');   // 期限切れは赤
+      else if (t.status === 'todo' && t.dueDate === todayStr()) s.classList.add('today');
+      s.textContent = '📅 ' + fmtDue(t.dueDate); meta.appendChild(s);
+    }
+    if (ui.view === 'today' || ui.view === 'inbox') {
+      const l = listById(t.listId);
+      if (ui.view === 'today') { const s = document.createElement('span'); s.textContent = l ? '# ' + l.name : 'インボックス'; meta.appendChild(s); }
+    }
+    if (t.description) { const s = document.createElement('span'); s.className = 'memo-icon'; s.textContent = '≡ メモ'; meta.appendChild(s); }
+    if (t.priority === 'high') { const b = document.createElement('span'); b.className = 'prio-badge'; b.textContent = '優先度 高'; row.appendChild(b); }
+
+    row.querySelector('.check').addEventListener('click', e => { e.stopPropagation(); toggleDone(t.id); });
+    row.addEventListener('click', () => openPanel(t.id));
+    box.appendChild(row);
+  });
+
+  const hasDone = base.some(t => t.status === 'done');
+  $('bulkWrap').classList.toggle('hidden', !(hasDone && ui.filter !== 'todo'));
+}
+
+/* ================= 操作(本番ではAPIを呼ぶところ) ================= */
+function setView(v) {
+  ui.view = v; ui.selectedId = null;
+  closeSidebar(); renderAll();
+}
+document.querySelectorAll('.nav-item[data-view]').forEach(b => b.addEventListener('click', () => setView(b.dataset.view)));
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => { ui.filter = t.dataset.filter; renderMain(); }));
+
+// F-03 タスク追加 → POST /api/tasks
+$('addForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const title = $('addInput').value.trim();
+  $('addErr').textContent = '';
+  if (!title) { $('addErr').textContent = 'タイトルを入力してください'; return; }
+  if (title.length > 100) { $('addErr').textContent = 'タイトルは100文字以内で入力してください'; return; }
+  const listId = (ui.view === 'today' || ui.view === 'inbox') ? null : ui.view;
+  const now = Date.now();
+  db.tasks.push({ id: uid(), title, listId, dueDate: ui.view === 'today' ? todayStr() : null, priority: 'medium', status: 'todo', description: '', completedAt: null, createdAt: now, updatedAt: now });
+  save(); $('addInput').value = '';
+  if (ui.filter === 'done') ui.filter = 'todo';
+  renderSidebar(); renderMain();
+});
+$('addInput').addEventListener('input', () => $('addErr').textContent = '');
+
+// F-05 完了 / 戻す → PATCH /api/tasks/:id { status }
+function toggleDone(id) {
+  const t = db.tasks.find(x => x.id === id); if (!t) return;
+  t.status = t.status === 'todo' ? 'done' : 'todo';
+  t.completedAt = t.status === 'done' ? Date.now() : null;   // 完了時刻を記録 / 戻したら空に
+  t.updatedAt = Date.now(); save();
+  if (t.status === 'done') toast('完了しました');
+  renderAll();
+}
+
+// F-15 完了済みを一括削除
+$('bulkDel').addEventListener('click', async () => {
+  const base = ui.view === 'today' ? db.tasks.filter(t => t.dueDate && t.dueDate <= todayStr()) : tasksInView();
+  const targets = base.filter(t => t.status === 'done');
+  if (!await confirmDialog({ title: '完了済みタスクを削除', body: `${targets.length}件の完了済みタスクを削除します。元に戻せません。` })) return;
+  const ids = new Set(targets.map(t => t.id));
+  db.tasks = db.tasks.filter(t => !ids.has(t.id));
+  if (ids.has(ui.selectedId)) ui.selectedId = null;
+  save(); toast(`${ids.size}件を削除しました`); renderAll();
+});
+
+/* ---- リスト操作(F-10) ---- */
+const COLORS = ['#2f6fde', '#2b9a66', '#c2410c', '#8b5cf6', '#db2777', '#0891b2', '#ca8a04'];
+function validateListName(name, exceptId) {
+  if (!name) return 'リスト名を入力してください';
+  if (name.length > 30) return 'リスト名は30文字以内で入力してください';
+  if (db.lists.some(l => l.name === name && l.id !== exceptId)) return '同じ名前のリストがあります';
+  return '';
+}
+function addListHandler() {
+  const wrap = $('addListWrap');
+  wrap.innerHTML = '<div style="padding:2px 0"><input class="inline-input" placeholder="リスト名を入力してEnter" maxlength="40"><div class="err" style="padding-left:4px"></div></div>';
+  const inp = wrap.querySelector('input'), err = wrap.querySelector('.err');
+  inp.focus();
+  const restore = () => { wrap.innerHTML = ''; const b = document.createElement('button'); b.className = 'nav-item add-list'; b.id = 'addListBtn'; b.innerHTML = '<span class="nav-icon">＋</span>リストを追加'; wrap.appendChild(b); b.addEventListener('click', addListHandler); };
+  inp.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { restore(); return; }
+    if (e.key !== 'Enter') return;
+    const name = inp.value.trim(); const msg = validateListName(name);
+    if (msg) { err.textContent = msg; return; }
+    const l = { id: uid(), name, color: COLORS[db.lists.length % COLORS.length] };
+    db.lists.push(l); save(); restore(); setView(l.id);
+  });
+  inp.addEventListener('blur', () => setTimeout(() => { if (document.activeElement !== inp && !inp.value.trim()) restore(); }, 120));
+}
+$('addListBtn').addEventListener('click', addListHandler);
+
+function renameList(l, btn) {
+  const span = btn.querySelector('.ln');
+  const inp = document.createElement('input'); inp.className = 'inline-input'; inp.value = l.name; inp.maxLength = 40;
+  btn.replaceWith(inp); inp.focus(); inp.select();
+  const done = commit => {
+    if (commit) {
+      const name = inp.value.trim(), msg = validateListName(name, l.id);
+      if (msg) { toast(msg); inp.focus(); return; }
+      l.name = name; save();
+    }
+    renderAll();
+  };
+  inp.addEventListener('keydown', e => { if (e.key === 'Enter') done(true); if (e.key === 'Escape') done(false); });
+  inp.addEventListener('blur', () => done(true), { once: true });
+}
+
+// リスト削除 → 中のタスクはインボックスへ(ON DELETE SET NULL)
+async function deleteList(l) {
+  const n = db.tasks.filter(t => t.listId === l.id).length;
+  const ok = await confirmDialog({
+    title: `「${l.name}」を削除`,
+    body: n ? `このリストの${n}件のタスクはインボックスへ移ります。タスクは削除されません。` : 'このリストにタスクはありません。',
+  });
+  if (!ok) return;
+  db.tasks.forEach(t => { if (t.listId === l.id) t.listId = null; });
+  db.lists = db.lists.filter(x => x.id !== l.id);
+  save();
+  if (ui.view === l.id) ui.view = 'inbox';
+  toast(n ? `リストを削除し、${n}件をインボックスへ移しました` : 'リストを削除しました');
+  renderAll();
+}
+
+/* ---- ユーザーメニュー(ログアウト) ---- */
+$('userMenuBtn').addEventListener('click', e => {
+  e.stopPropagation();
+  openMenu(e.currentTarget, [
+    { label: 'ログアウト', run: () => { db.user = null; ui.selectedId = null; save(); route(); } },
+    { label: 'デモデータに戻す', danger: true, run: async () => {
+        if (!await confirmDialog({ title: 'デモデータに戻す', body: '追加・変更したタスクとリストはすべて消え、最初のサンプルに戻ります。', okText: '戻す' })) return;
+        const u = db.user; db = seed(); db.user = u; ui.view = 'today'; ui.filter = 'todo'; ui.selectedId = null; save(); renderAll();
+      } },
+  ]);
+});
+
+/* ---- スマホ用サイドバー ---- */
+function closeSidebar() { $('sidebar').classList.remove('open'); $('backdrop').classList.remove('show'); }
+$('hamburger').addEventListener('click', () => { $('sidebar').classList.add('open'); $('backdrop').classList.add('show'); });
+$('backdrop').addEventListener('click', closeSidebar);
+
+/* ================= S-04 詳細パネル(自動保存) ================= */
+function openPanel(id) { ui.selectedId = id; renderMain(); renderPanel(); setTimeout(() => {}, 0); }
+function closePanel() { ui.selectedId = null; renderMain(); renderPanel(); }
+$('closePanel').addEventListener('click', closePanel);
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && ui.selectedId && !document.querySelector('.overlay')) closePanel(); });
+
+let savedTimer;
+function markSaved() {
+  const n = $('savedNote'); n.textContent = '✓ 保存しました'; n.style.opacity = 1;
+  clearTimeout(savedTimer); savedTimer = setTimeout(() => n.style.opacity = 0, 1500);
+}
+const current = () => db.tasks.find(t => t.id === ui.selectedId);
+
+function renderPanel() {
+  const t = current();
+  $('panel').classList.toggle('hidden', !t);
+  if (!t) return;
+  $('pTitleWrap').classList.toggle('done', t.status === 'done');
+  if (document.activeElement !== $('pTitle')) $('pTitle').value = t.title;
+  $('pTitleErr').textContent = '';
+  $('pDue').value = t.dueDate || '';
+  document.querySelectorAll('.prio-opt').forEach(b => b.classList.toggle('active', b.dataset.p === t.priority));
+  const sel = $('pList'); sel.innerHTML = '';
+  const o0 = document.createElement('option'); o0.value = ''; o0.textContent = 'インボックス'; sel.appendChild(o0);
+  db.lists.forEach(l => { const o = document.createElement('option'); o.value = l.id; o.textContent = l.name; sel.appendChild(o); });
+  sel.value = t.listId || '';
+  if (document.activeElement !== $('pMemo')) $('pMemo').value = t.description || '';
+  $('pMemoCount').textContent = `${($('pMemo').value || '').length} / 1000`;
+  $('pMemoErr').textContent = '';
+  $('savedNote').style.opacity = 0;
+}
+
+function update(patch) {
+  const t = current(); if (!t) return;
+  Object.assign(t, patch, { updatedAt: Date.now() }); save(); markSaved();
+  renderSidebar(); renderMain();
+}
+
+$('pCheck').addEventListener('click', () => { const t = current(); if (t) { toggleDone(t.id); } });
+// 入力欄から離れたら保存
+$('pTitle').addEventListener('blur', () => {
+  const t = current(); if (!t) return;
+  const v = $('pTitle').value.trim();
+  if (!v) { $('pTitleErr').textContent = 'タイトルを入力してください'; $('pTitle').value = t.title; return; }
+  if (v.length > 100) { $('pTitleErr').textContent = 'タイトルは100文字以内で入力してください'; return; }
+  $('pTitleErr').textContent = '';
+  if (v !== t.title) update({ title: v });
+});
+$('pTitle').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); $('pTitle').blur(); } });
+$('pDue').addEventListener('change', () => update({ dueDate: $('pDue').value || null }));
+document.querySelectorAll('[data-due]').forEach(b => b.addEventListener('click', () => {
+  const v = b.dataset.due; update({ dueDate: v === 'clear' ? null : addDays(Number(v)) }); renderPanel(); markSaved();
+}));
+document.querySelectorAll('.prio-opt').forEach(b => b.addEventListener('click', () => { update({ priority: b.dataset.p }); renderPanel(); markSaved(); }));
+$('pList').addEventListener('change', () => update({ listId: $('pList').value || null }));
+$('pMemo').addEventListener('input', () => {
+  const len = $('pMemo').value.length;
+  $('pMemoCount').textContent = `${len} / 1000`;
+  $('pMemoErr').textContent = len > 1000 ? '1,000文字以内で入力してください' : '';
+});
+$('pMemo').addEventListener('blur', () => {
+  const t = current(); if (!t) return;
+  const v = $('pMemo').value;
+  if (v.length > 1000) return;
+  if (v !== (t.description || '')) update({ description: v });
+});
+
+// F-07 削除 → DELETE /api/tasks/:id
+$('pDelete').addEventListener('click', async () => {
+  const t = current(); if (!t) return;
+  if (!await confirmDialog({ title: 'タスクを削除', body: `「${t.title}」を削除します。元に戻せません。` })) return;
+  db.tasks = db.tasks.filter(x => x.id !== t.id); ui.selectedId = null; save();
+  toast('削除しました'); renderAll();
+});
+
+route();
+})();
+</script>
+</body>
+</html>
