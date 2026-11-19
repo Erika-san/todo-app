@@ -26,7 +26,7 @@ Nov 17, 2026 · @Erika ・ 最終更新 2026-11-19(MVP 完成)
 | --- | --- | --- |
 | 作るもの | Webアプリ(スマホ対応) | アプリストア申請が不要。URLだけでどの端末でも使える |
 | 技術 | Next.js 16(App Router)+ React 19、Prisma 7(`@prisma/adapter-pg` で接続)、Supabase(PostgreSQL・認証。`@supabase/ssr`)、Zod 4 | PortoGenで使った構成なので学習コストが低い。無料枠で運用できる。Next.js 16 では Middleware の名前が変わり、`src/proxy.ts`(Proxy)になった |
-| 公開先 | Vercel | Next.jsと相性がよく、GitHubにpushするだけで自動デプロイ。サーバーの処理は Vercel のソウル(icn1)、DB は Supabase のソウル(ap-northeast-2)で動かす(近い場所にそろえて速くするため) |
+| 公開先 | Vercel | Next.jsと相性がよく、GitHubにpushするだけで自動デプロイ。サーバーの処理は Vercel のソウル(icn1)、DB は Supabase のソウル(ap-northeast-2)で動かす(近い場所にそろえて速くするため)。`main` ブランチが本番、`dev` ブランチは Preview(確認用)で、DB も本番と開発用に分ける(第9章 運用) |
 | ログイン | あり(メール+パスワード) | PCとスマホで同じデータを見るには「誰のデータか」の区別が必要。Supabase Authで実装が軽い |
 | 新規登録 | 誰でも登録できる。確認メールは送らない(Supabase の Confirm email はオフ) | 登録してすぐ使えるようにするため |
 | タスクの分類 | リスト(1タスクに1つ)。タグは後回し | タグは多対多の中間テーブルが必要で複雑。まずはフォルダ式で十分 |
@@ -324,8 +324,20 @@ tasks
 
 **運用**
 
-- **DB の変更**: マイグレーションは手元で行い、Supabase に反映してから push する(先に push すると、新しいコードが古い DB で動いてしまう)。手順は CLAUDE.md に書いてある。
+環境は3つ。本番と開発で、Supabase のプロジェクト(DB と Auth)を分ける。
+
+| 環境 | ブランチ | Supabase | 環境変数の置き場所 |
+| --- | --- | --- | --- |
+| 本番 | main | 本番のプロジェクト | Vercel の Production |
+| Preview(確認用) | dev(と main 以外のすべてのブランチ) | 開発用のプロジェクト | Vercel の Preview |
+| 手元 | 作業中のブランチ | 開発用のプロジェクト | .env.local |
+
+- **ブランチの流れ**: dev で作る → 手元と Preview で確かめる → GitHub のプルリクエストで dev を main にマージ → 本番で確かめる。main には直接コミットしない。
+- **DB の変更の順番**: 開発用の DB に反映 → dev で確かめる → main にマージする直前に本番の DB に反映 → マージ。本番の DB へ反映するときは、毎回、事前に確認をとる。手順は CLAUDE.md に書いてある。
+- **DB の変更は「足すだけ」**: 本番の DB を先に変えるので、少しの間、古いコードが新しい DB で動く。列やテーブルを消す・名前を変えるときは2回に分ける。
 - **DB への接続**: Supabase の Shared Pooler(IPv4)を使う。`db.<ref>.supabase.co` は IPv6 だけなので、手元の PC や Vercel からはつながらない。
-- **Vercel の環境変数**: NEXT\_PUBLIC\_SUPABASE\_URL、NEXT\_PUBLIC\_SUPABASE\_PUBLISHABLE\_KEY、DATABASE\_URL の3つ。DIRECT\_URL(マイグレーション用)は Vercel に置かない。
-- **新規登録**: 誰でも登録できるまま開けておく。
-- **Supabase の無料プラン**: 使わない期間が続くと、プロジェクトが一時停止される。止まったらダッシュボードから再開する(止まっている間、ログインでは「通信できませんでした…」が出る)。
+- **Vercel の環境変数**: NEXT_PUBLIC_SUPABASE_URL、NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY、DATABASE_URL の3つを、Production(本番の値)と Preview(開発用の値)に分けて置く。DIRECT_URL(マイグレーション用)は Vercel に置かない。
+- **手元の環境変数**: .env.local に開発用の値、.env.prod.local に本番の DIRECT_URL だけ(本番の DB にマイグレーションを流すときに使う)。どちらも Git に入れない。
+- **Preview の URL**: Vercel にログインしていないと開けない(Vercel の標準の設定)。
+- **新規登録**: 本番は誰でも登録できるまま開けておく。開発用のプロジェクトも、本番と同じく確認メールは送らない。
+- **Supabase の無料プラン**: 同時に動かせるのは2つまで(本番と開発用でちょうど2つ)。使わない期間が続くと、プロジェクトが一時停止される。止まったらダッシュボードから再開する(止まっている間、ログインでは「通信できませんでした…」が出る)。

@@ -1,4 +1,5 @@
-// Prisma CLI(マイグレーションなど)の設定。Prisma 7 では接続先をこのファイルに書く
+// Prisma CLI(マイグレーションなど)の設定。Prisma 7 では接続先をこのファイルに書く。
+// ふだんはこのファイル(.env.local = 開発用の Supabase)を使う。本番の DB に流すときは prisma.prod.config.ts を使う
 import { defineConfig } from "prisma/config";
 
 // Prisma 7 は .env を自動で読まないので、Node.js の機能で .env.local を読み込む。

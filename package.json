@@ -7,7 +7,11 @@
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "eslint",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "db:migrate:dev": "prisma migrate deploy",
+    "db:status:dev": "prisma migrate status",
+    "db:migrate:prod": "prisma migrate deploy --config prisma.prod.config.ts",
+    "db:status:prod": "prisma migrate status --config prisma.prod.config.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "7.10.1",
